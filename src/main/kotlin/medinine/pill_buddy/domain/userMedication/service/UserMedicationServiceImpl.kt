@@ -25,7 +25,6 @@ class UserMedicationServiceImpl(
         val savedUserMedication = userMedicationRepository.save(userMedication)
 
         log.info("Saved userMedication: {}", savedUserMedication)
-
         return UserMedicationDTO.entityToDTO(savedUserMedication)
     }
 }
