@@ -20,4 +20,11 @@ class UserMedicationController (
         val savedUserMedication = userMedicationService.register(caretakerId, userMedicationDTO)
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUserMedication)
     }
+
+    @GetMapping
+    fun getUserMedications(@PathVariable caretakerId: Long): ResponseEntity<List<UserMedicationDTO>> {
+        val userMedicationDTOList = userMedicationService.retrieve(caretakerId)
+
+        return ResponseEntity.ok(userMedicationDTOList)
+    }
 }
