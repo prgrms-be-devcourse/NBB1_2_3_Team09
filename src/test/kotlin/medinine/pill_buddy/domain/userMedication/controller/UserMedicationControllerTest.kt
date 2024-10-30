@@ -60,7 +60,6 @@ class UserMedicationControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("감기약"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value("잘 듣는 감기약"))
     }
-
     @Test
     @DisplayName("약 정보 조회 컨트롤러")
     fun getUserMedication() {
