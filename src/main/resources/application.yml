@@ -11,32 +11,32 @@ spring:
         batch_size: 100
     hibernate.ddl-auto: update
 
-  data:
-    redis:
-      host: localhost
-      port: 6379
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
 
 logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
 
-jwt:
-  token:
-    client-secret: ${JWT_SECRET_KEY}
-    access-expiration-time: 300000 # 5분
-    refresh-expiration-time: 86400000  # 24시간
-
-file:
-  path: upload
-
-openApi:
-  dataType: json
-  serviceKey: ${LOCAL_SERVICE_KEY} #e약은요 API의 encoding된 인증키를 넣어주시면 됩니다
-  callbackUrl: http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList
-
-sms:
-  api-key: ${API_KEY}
-  api-secret-key: ${API_SECRET}
-  domain: https://api.coolsms.co.kr
-  from-number: 01040765951
+#jwt:
+#  token:
+#    client-secret: ${JWT_SECRET_KEY}
+#    access-expiration-time: 300000 # 5분
+#    refresh-expiration-time: 86400000  # 24시간
+#
+#file:
+#  path: upload
+#
+#openApi:
+#  dataType: json
+#  serviceKey: ${LOCAL_SERVICE_KEY} #e약은요 API의 encoding된 인증키를 넣어주시면 됩니다
+#  callbackUrl: http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList
+#
+#sms:
+#  api-key: ${API_KEY}
+#  api-secret-key: ${API_SECRET}
+#  domain: https://api.coolsms.co.kr
+#  from-number: 01040765951
