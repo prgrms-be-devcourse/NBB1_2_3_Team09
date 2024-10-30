@@ -19,4 +19,11 @@ class RedisUtils(
     fun hasTokenBlackList(token: String): Boolean {
         return redisTemplate.hasKey(token)
     }
+
+    fun clearAll() {
+        val keys = redisTemplate.keys("*")
+        keys.let {
+            redisTemplate.delete(it)
+        }
+    }
 }

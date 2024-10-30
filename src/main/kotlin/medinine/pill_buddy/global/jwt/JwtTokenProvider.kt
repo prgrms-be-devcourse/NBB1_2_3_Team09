@@ -30,7 +30,6 @@ class JwtTokenProvider(
 
     private val redisUtils: RedisUtils
 ) {
-
     companion object {
         private const val GRANT_TYPE = "Bearer"
         private const val ACCESS_TOKEN_TYPE = "ACCESS"
