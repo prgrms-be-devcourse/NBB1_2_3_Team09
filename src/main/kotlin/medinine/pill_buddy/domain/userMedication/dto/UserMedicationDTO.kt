@@ -30,7 +30,6 @@ data class UserMedicationDTO(
             endDate = this.endDate ?: LocalDateTime.now().plusMonths(1)
         )
     }
-
     companion object {
         fun entityToDTO(userMedication: UserMedication): UserMedicationDTO {
             return UserMedicationDTO(
