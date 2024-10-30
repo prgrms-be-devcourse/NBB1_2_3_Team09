@@ -38,7 +38,6 @@ class UserMedicationServiceImplTest {
         )
 
         val register = userMedicationService.register(caretakerId, userMedicationDTO)
-
         assertThat(register.name).isEqualTo("텐텐")
         assertThat(register.description).isEqualTo("맛있는 영양제")
         assertThat(register.dosage).isEqualTo(3)
