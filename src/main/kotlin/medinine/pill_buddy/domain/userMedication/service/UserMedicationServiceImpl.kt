@@ -1,6 +1,6 @@
 package medinine.pill_buddy.domain.userMedication.service
 
-import jakarta.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 import medinine.pill_buddy.domain.user.caretaker.repository.CaretakerRepository
 import medinine.pill_buddy.domain.userMedication.dto.UserMedicationDTO
 import medinine.pill_buddy.domain.userMedication.repository.UserMedicationRepository
@@ -26,5 +26,13 @@ class UserMedicationServiceImpl(
 
         log.info("Saved userMedication: {}", savedUserMedication)
         return UserMedicationDTO.entityToDTO(savedUserMedication)
+    }
+
+    @Transactional(readOnly = true)
+    override fun retrieve(caretakerId: Long): List<UserMedicationDTO> {
+        val medications = userMedicationRepository.findByCaretakerId(caretakerId)
+        log.info("Retrieved medications: {}", medications)
+
+        return medications.map { UserMedicationDTO.entityToDTO(it) }
     }
 }
