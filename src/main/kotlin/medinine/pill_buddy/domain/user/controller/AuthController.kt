@@ -5,12 +5,10 @@ import medinine.pill_buddy.domain.user.dto.LoginDto
 import medinine.pill_buddy.domain.user.dto.UserDto
 import medinine.pill_buddy.domain.user.service.AuthService
 import medinine.pill_buddy.global.jwt.JwtToken
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
@@ -32,4 +30,8 @@ class AuthController(
 
         return ResponseEntity.noContent().build()
     }
+
+    @PostMapping("/reissue-token")
+    fun reissueToken(@RequestHeader(HttpHeaders.AUTHORIZATION) bearerToken: String?): ResponseEntity<JwtToken> =
+        ResponseEntity.ok(authService.reissueToken(bearerToken))
 }

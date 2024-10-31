@@ -154,6 +154,49 @@ class AuthServiceTest @Autowired constructor(
             .hasMessage(ErrorCode.USER_MISMATCHED_ID_OR_PASSWORD.message)
     }
 
+    @Test
+    @DisplayName("사용자는 refreshToken 을 통해 토큰을 재발급 할 수 있다.")
+    fun reissueToken() {
+        // given
+        val loginId = caretaker.loginId
+        val password = "test-password"
+        val loginDto = LoginDto(loginId, password)
+
+        val jwtToken = authService.login(loginDto)
+        val refreshToken = "Bearer " + jwtToken.refreshToken
+
+        // when
+        val reissuedJwtToken = authService.reissueToken(refreshToken)
+        val reissuedAccessToken = reissuedJwtToken.accessToken
+        val authentication = jwtTokenProvider.getAuthenticationByToken(reissuedAccessToken)
+
+        // then
+        assertThat(authentication.name).isEqualTo(loginId)
+        assertThat(authentication.authorities.iterator().next().authority).isEqualTo("ROLE_USER")
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 refreshToken 이면, PillBuddyException 이 발생한다.")
+    fun reissueToken_with_expired_refreshToken() {
+        // given
+        val malformedRefreshToken = "Bearer malformed_jwt_token"
+
+        assertThatThrownBy { authService.reissueToken(malformedRefreshToken) }
+            .isInstanceOf(PillBuddyCustomException::class.java)
+            .hasMessage("유효하지 않은 JWT 토큰입니다.")
+    }
+
+    @Test
+    @DisplayName("GrantType 이 없는 refreshToken 이면, PillBuddyException 이 발생한다.")
+    fun reissueToken_without_grantType() {
+        // given
+        val refreshToken = "simple_refresh_token"
+
+        assertThatThrownBy { authService.reissueToken(refreshToken) }
+            .isInstanceOf(PillBuddyCustomException::class.java)
+            .hasMessage("유효하지 않은 JWT 토큰입니다.")
+    }
+
     private fun createCaretaker() {
         caretaker = Caretaker(
             username = "test-caretaker",

@@ -56,10 +56,22 @@ class AuthService(
 
     @Transactional(propagation = Propagation.NEVER)
     fun logout() {
-        val authentication = SecurityContextHolder.getContext().authentication
+        SecurityContextHolder.getContext().authentication
             ?: throw PillBuddyCustomException(ErrorCode.USER_AUTHENTICATION_REQUIRED)
 
         SecurityContextHolder.clearContext()
+    }
+
+    @Transactional(readOnly = true)
+    fun reissueToken(bearerToken: String?): JwtToken {
+        // 토큰 가져오기
+        val refreshToken = jwtTokenProvider.resolveToken(bearerToken)
+            // null 이 아닐 경우 아래 검증 메서드를 거침 (아래 조건문을 통과하지 못하면 null 반환)
+            ?.takeIf { jwtTokenProvider.validateToken(it) && jwtTokenProvider.isRefreshToken(it) }
+            // null 일 경우 예외 발생
+            ?: throw PillBuddyCustomException(ErrorCode.JWT_TOKEN_INVALID)
+
+        return jwtTokenProvider.reissueAccessToken(refreshToken)
     }
 
 
@@ -67,12 +79,14 @@ class AuthService(
         require(!caregiverRepository.existsByLoginId(loginId) && !caretakerRepository.existsByLoginId(loginId)) {
             throw PillBuddyCustomException(ErrorCode.USER_ALREADY_REGISTERED_LOGIN_ID)
         }
-
         require(!caregiverRepository.existsByEmail(email) && !caretakerRepository.existsByEmail(email)) {
             throw PillBuddyCustomException(ErrorCode.USER_ALREADY_REGISTERED_EMAIL)
         }
-
-        require(!caregiverRepository.existsByPhoneNumber(phoneNumber) && !caretakerRepository.existsByPhoneNumber(phoneNumber)) {
+        require(
+            !caregiverRepository.existsByPhoneNumber(phoneNumber) && !caretakerRepository.existsByPhoneNumber(
+                phoneNumber
+            )
+        ) {
             throw PillBuddyCustomException(ErrorCode.USER_ALREADY_REGISTERED_PHONE_NUMBER)
         }
     }
