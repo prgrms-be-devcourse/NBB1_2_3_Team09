@@ -41,11 +41,7 @@ class AuthService(
             throw PillBuddyCustomException(ErrorCode.USER_ALREADY_REGISTERED_EMAIL)
         }
 
-        require(
-            !caregiverRepository.existsByPhoneNumber(phoneNumber) && !caretakerRepository.existsByPhoneNumber(
-                phoneNumber
-            )
-        ) {
+        require(!caregiverRepository.existsByPhoneNumber(phoneNumber) && !caretakerRepository.existsByPhoneNumber(phoneNumber)) {
             throw PillBuddyCustomException(ErrorCode.USER_ALREADY_REGISTERED_PHONE_NUMBER)
         }
     }
