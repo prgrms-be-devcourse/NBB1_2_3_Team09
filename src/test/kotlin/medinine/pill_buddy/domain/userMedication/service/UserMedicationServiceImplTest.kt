@@ -45,4 +45,20 @@ class UserMedicationServiceImplTest {
         assertThat(register.type).isEqualTo(MedicationType.SUPPLEMENT)
         assertThat(register.stock).isEqualTo(10)
     }
+
+    @Test
+    @DisplayName("약 정보 조회")
+    fun userMedicationRetrieve() {
+        val caretakerId = 2L
+
+        val byCaretakerId = userMedicationRepository.findByCaretakerId(caretakerId)
+        if (byCaretakerId.isEmpty()) {
+            return
+        }
+
+        assertThat(byCaretakerId[0].name).isEqualTo("Vitamin D")
+        assertThat(byCaretakerId[0].dosage).isEqualTo(1)
+        assertThat(byCaretakerId[0].description).isEqualTo("Bone health supplement")
+        assertThat(byCaretakerId[0].caretaker?.id).isEqualTo(caretakerId)
+    }
 }
