@@ -39,4 +39,4 @@ sms:
   api-key: ${API_KEY}
   api-secret-key: ${API_SECRET}
   domain: https://api.coolsms.co.kr
-  from-number: 01040765951
+  from-number: 01084856953
