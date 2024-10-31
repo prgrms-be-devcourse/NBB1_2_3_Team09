@@ -25,7 +25,6 @@ class NotificationController(
 
     @Scheduled(cron = "0 * * * * ?")
     fun checkAndSendNotifications() {
-        log.info("스케줄링 메서드가 실행되었습니다.")
         notificationService.sendNotifications()
     }
 }
