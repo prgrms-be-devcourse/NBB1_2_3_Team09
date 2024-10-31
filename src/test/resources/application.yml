@@ -35,8 +35,8 @@ jwt:
 #  serviceKey: ${LOCAL_SERVICE_KEY}
 #  callbackUrl: http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList
 #
-#sms:
-#  api-key: ${API_KEY}
-#  api-secret-key: ${API_SECRET}
-#  domain: https://api.coolsms.co.kr
-#  from-number: 01040765951
+sms:
+  api-key: ${API_KEY}
+  api-secret-key: ${API_SECRET}
+  domain: https://api.coolsms.co.kr
+  from-number: 01039536296
