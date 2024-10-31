@@ -27,4 +27,14 @@ class UserMedicationController (
 
         return ResponseEntity.ok(userMedicationDTOList)
     }
+
+    @PutMapping("/{userMedicationId}")
+    fun updateUserMedication(
+        @PathVariable caretakerId: Long,
+        @PathVariable userMedicationId: Long,
+        @RequestBody userMedicationDTO: UserMedicationDTO
+    ): ResponseEntity<UserMedicationDTO> {
+        val updateUserMedication = userMedicationService.modify(caretakerId, userMedicationId, userMedicationDTO)
+        return ResponseEntity.ok(updateUserMedication)
+    }
 }
