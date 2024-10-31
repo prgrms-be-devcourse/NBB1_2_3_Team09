@@ -4,9 +4,11 @@ import JoinDto
 import jakarta.transaction.Transactional
 import medinine.pill_buddy.domain.user.caretaker.entity.Caretaker
 import medinine.pill_buddy.domain.user.caretaker.repository.CaretakerRepository
+import medinine.pill_buddy.domain.user.dto.LoginDto
 import medinine.pill_buddy.domain.user.dto.UserType
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
+import medinine.pill_buddy.global.jwt.JwtTokenProvider
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class AuthServiceTest @Autowired constructor(
     private val authService: AuthService,
     private val caretakerRepository: CaretakerRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val jwtTokenProvider: JwtTokenProvider
 ) {
     private lateinit var caretaker: Caretaker
 
@@ -109,6 +112,46 @@ class AuthServiceTest @Autowired constructor(
         assertThatThrownBy { authService.join(joinDto) }
             .isInstanceOf(PillBuddyCustomException::class.java)
             .hasMessage(ErrorCode.USER_ALREADY_REGISTERED_PHONE_NUMBER.message)
+    }
+
+    @Test
+    @DisplayName("LoginDto 를 통해 로그인을 할 수 있다.")
+    fun login() {
+        // given
+        val loginDto = LoginDto(caretaker.loginId, "test-password")
+
+        // when
+        val jwtToken = authService.login(loginDto)
+        val authentication = jwtTokenProvider.getAuthenticationByToken(jwtToken.accessToken)
+
+        // then
+        assertThat(jwtToken.grantType).isEqualTo("Bearer")
+        assertThat(authentication.authorities.iterator().next().authority).isEqualTo("ROLE_USER")
+        assertThat(authentication.name).isEqualTo(loginDto.loginId)
+    }
+
+    @Test
+    @DisplayName("LoginId 를 찾을 수 없다면, PillBuddyCustomException 이 발생한다.")
+    fun loginWithInvalidLoginId() {
+        val invalidLoginId = "invalidLoginId"
+        val password = "password3"
+        val loginDto = LoginDto(invalidLoginId, password)
+
+        assertThatThrownBy { authService.login(loginDto) }
+            .isInstanceOf(PillBuddyCustomException::class.java)
+            .hasMessage(ErrorCode.USER_NOT_FOUND.message)
+    }
+
+    @Test
+    @DisplayName("password 가 저장된 비밀번호와 일치하지 않다면, PillBuddyCustomException 이 발생한다.")
+    fun loginWithInvalidPassword() {
+        val loginId = caretaker.loginId
+        val invalidPassword = "invalidPassword"
+        val loginDto = LoginDto(loginId, invalidPassword)
+
+        assertThatThrownBy { authService.login(loginDto) }
+            .isInstanceOf(PillBuddyCustomException::class.java)
+            .hasMessage(ErrorCode.USER_MISMATCHED_ID_OR_PASSWORD.message)
     }
 
     private fun createCaretaker() {
