@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*
 class UserMedicationController (
     private val userMedicationService: UserMedicationService
 ){
+
     @PostMapping
     fun createUserMedication(
         @PathVariable caretakerId: Long, @RequestBody userMedicationDTO: UserMedicationDTO
