@@ -86,4 +86,29 @@ class UserMedicationControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(2L))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("감기약"))
     }
+
+    @Test
+    @Transactional
+    fun updateUserMedication() {
+        val caretakerId = 1L
+        val medicationId = 1L
+        val userMedicationDTO = UserMedicationDTO(
+            name = "vitamin",
+            description = "vitaminA",
+            dosage = 5,
+            frequency = Frequency.TWICE_A_DAY,
+            type = MedicationType.SUPPLEMENT,
+            stock = 5,
+            expirationDate = LocalDateTime.now(),
+            startDate = LocalDateTime.now(),
+            endDate = LocalDateTime.now()
+        )
+
+        whenever(userMedicationService.modify(caretakerId, medicationId, userMedicationDTO)).thenReturn(userMedicationDTO)
+
+        val modify = userMedicationService.modify(caretakerId, medicationId, userMedicationDTO)
+        Assertions.assertThat(modify.name).isEqualTo("vitamin")
+        Assertions.assertThat(modify.description).isEqualTo("vitaminA")
+        Assertions.assertThat(modify.dosage).isEqualTo(5)
+    }
 }
