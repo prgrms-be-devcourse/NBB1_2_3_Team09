@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -89,10 +90,13 @@ class UserMedicationControllerTest {
 
     @Test
     @Transactional
+    @WithMockUser
+    @DisplayName("약 정보 업데이트 컨트롤러")
     fun updateUserMedication() {
         val caretakerId = 1L
-        val medicationId = 1L
+        val userMedicationId = 1L
         val userMedicationDTO = UserMedicationDTO(
+            id = userMedicationId,
             name = "vitamin",
             description = "vitaminA",
             dosage = 5,
@@ -104,11 +108,16 @@ class UserMedicationControllerTest {
             endDate = LocalDateTime.now()
         )
 
-        whenever(userMedicationService.modify(caretakerId, medicationId, userMedicationDTO)).thenReturn(userMedicationDTO)
+        whenever(userMedicationService.modify(caretakerId, userMedicationId, userMedicationDTO)).thenReturn(userMedicationDTO)
 
-        val modify = userMedicationService.modify(caretakerId, medicationId, userMedicationDTO)
-        Assertions.assertThat(modify.name).isEqualTo("vitamin")
-        Assertions.assertThat(modify.description).isEqualTo("vitaminA")
-        Assertions.assertThat(modify.dosage).isEqualTo(5)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/caretakers/$caretakerId/user-medications/$userMedicationId")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(userMedicationDTO))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(userMedicationId))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("vitamin"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("vitaminA"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.dosage").value(5))
     }
 }

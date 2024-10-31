@@ -75,7 +75,6 @@ class UserMedicationServiceImplTest {
             userMedication.updateDosage(100)
             userMedication.updateDescription("loose pain")
         }
-
         val updatedMedication = userMedicationRepository.findById(userMedicationId).get()
         assertThat(updatedMedication.name).isEqualTo("aspirin")
         assertThat(updatedMedication.dosage).isEqualTo(100)
