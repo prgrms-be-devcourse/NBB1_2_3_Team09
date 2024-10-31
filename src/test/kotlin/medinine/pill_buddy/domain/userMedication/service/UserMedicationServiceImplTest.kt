@@ -61,4 +61,23 @@ class UserMedicationServiceImplTest {
         assertThat(byCaretakerId[0].description).isEqualTo("Bone health supplement")
         assertThat(byCaretakerId[0].caretaker?.id).isEqualTo(caretakerId)
     }
+
+    @Test
+    @Transactional
+    fun userMedicationUpdate() {
+        val caretakerId = 1L
+        val userMedicationId = 1L
+        val byCaretakerId = userMedicationRepository.findByCaretakerId(caretakerId)
+
+        if (byCaretakerId[0].id == userMedicationId) {
+            val userMedication = byCaretakerId[0]
+            userMedication.updateName("aspirin")
+            userMedication.updateDosage(100)
+            userMedication.updateDescription("loose pain")
+        }
+        val updatedMedication = userMedicationRepository.findById(userMedicationId).get()
+        assertThat(updatedMedication.name).isEqualTo("aspirin")
+        assertThat(updatedMedication.dosage).isEqualTo(100)
+        assertThat(updatedMedication.description).isEqualTo("loose pain")
+    }
 }
