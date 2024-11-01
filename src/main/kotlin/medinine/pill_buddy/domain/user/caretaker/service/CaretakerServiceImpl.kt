@@ -39,4 +39,13 @@ class CaretakerServiceImpl (
         val savedCaretakerCaregiver = caretakerCaregiverRepository.save(caretakerCaregiver)
         return CaretakerCaregiverDTO.entityToDTO(savedCaretakerCaregiver)
     }
+
+    @Transactional
+    override fun remove(caretakerId: Long, caregiverId: Long) {
+        val caretakerCaregiver = caretakerCaregiverRepository.findByCaretakerIdAndCaregiverId(
+            caretakerId, caregiverId
+        ) ?: throw PillBuddyCustomException(ErrorCode.CARETAKER_CAREGIVER_NOT_MATCHED)
+
+        caretakerCaregiverRepository.delete(caretakerCaregiver)
+    }
 }
