@@ -153,10 +153,8 @@ class JwtTokenProvider(
     }
 
     fun resolveToken(bearerToken: String?): String? {
-        return if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith(GRANT_TYPE) &&
-            bearerToken.length > GRANT_TYPE.length + 1
-        ) {
-            bearerToken.substring(GRANT_TYPE.length + 1)
-        } else null
+        return bearerToken
+            ?.takeIf { it.startsWith(GRANT_TYPE) && it.length > GRANT_TYPE.length + 1 }
+            ?.substring(GRANT_TYPE.length + 1)
     }
 }

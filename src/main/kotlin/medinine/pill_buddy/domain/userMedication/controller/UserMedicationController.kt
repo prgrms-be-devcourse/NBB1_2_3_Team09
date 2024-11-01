@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*
 class UserMedicationController (
     private val userMedicationService: UserMedicationService
 ){
+
     @PostMapping
     fun createUserMedication(
         @PathVariable caretakerId: Long, @RequestBody userMedicationDTO: UserMedicationDTO
@@ -26,5 +27,15 @@ class UserMedicationController (
         val userMedicationDTOList = userMedicationService.retrieve(caretakerId)
 
         return ResponseEntity.ok(userMedicationDTOList)
+    }
+
+    @PutMapping("/{userMedicationId}")
+    fun updateUserMedication(
+        @PathVariable caretakerId: Long,
+        @PathVariable userMedicationId: Long,
+        @RequestBody userMedicationDTO: UserMedicationDTO
+    ): ResponseEntity<UserMedicationDTO> {
+        val updateUserMedication = userMedicationService.modify(caretakerId, userMedicationId, userMedicationDTO)
+        return ResponseEntity.ok(updateUserMedication)
     }
 }

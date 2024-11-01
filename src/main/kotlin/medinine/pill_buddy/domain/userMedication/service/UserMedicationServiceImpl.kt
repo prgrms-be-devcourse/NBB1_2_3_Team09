@@ -35,4 +35,25 @@ class UserMedicationServiceImpl(
 
         return medications.map { UserMedicationDTO.entityToDTO(it) }
     }
+
+    @Transactional
+    override fun modify(
+        caretakerId: Long,
+        userMedicationId: Long,
+        userMedicationDTO: UserMedicationDTO
+    ): UserMedicationDTO {
+        val userMedication = userMedicationRepository.findById(userMedicationId).orElseThrow {
+            PillBuddyCustomException(ErrorCode.MEDICATION_NOT_FOUND)
+        }
+
+        if (userMedication.caretaker?.id != caretakerId) {
+            throw PillBuddyCustomException(ErrorCode.MEDICATION_NOT_VALID)
+        }
+
+        userMedicationDTO.name?.let { userMedication.updateName(it) }
+        userMedicationDTO.description?.let { userMedication.updateDescription(it) }
+        userMedicationDTO.dosage?.let { userMedication.updateDosage(it) }
+
+        return UserMedicationDTO.entityToDTO(userMedication)
+    }
 }
