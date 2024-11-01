@@ -36,4 +36,17 @@ class CaretakerControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/caretakers/$caretakerId/caregivers/$caregiverId"))
             .andExpect(status().isOk)
     }
+
+    @Test
+    @DisplayName("사용자 기능 중 보호자 삭제 기능 테스트")
+    fun deleteCaregiver() {
+        val caretakerId = 1L
+        val caregiverId = 1L
+        val response = ResponseEntity(mapOf("Process" to "Success"), HttpStatus.OK)
+
+        `when`(caretakerController.deleteCaregiver(caretakerId, caregiverId)).thenReturn(response)
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/caretakers/$caretakerId/caregivers/$caregiverId"))
+            .andExpect(status().isOk)
+    }
 }
