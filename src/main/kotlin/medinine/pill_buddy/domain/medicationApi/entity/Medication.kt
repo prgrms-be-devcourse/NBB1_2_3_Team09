@@ -47,13 +47,16 @@ class Medication: Persistable<Long> {
     @Column(columnDefinition = "text")
     var itemImagePath: String? = null
 
+    @Column(length = 100)
+    var keyword : String? = null
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private var createdAt: LocalDateTime? = null
 
     @LastModifiedDate
     @Column(name = "modified_at")
-    private var modifiedAt: LocalDateTime? = null
+    var modifiedAt: LocalDateTime? = null
 
     override fun getId(): Long = itemSeq
 

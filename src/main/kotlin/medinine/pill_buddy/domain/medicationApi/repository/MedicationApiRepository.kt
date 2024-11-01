@@ -8,8 +8,13 @@ import org.springframework.data.jpa.repository.Query
 
 interface MedicationApiRepository : JpaRepository<Medication, String> {
     @Query("""select m from Medication m where m.itemName like %:itemName%""")
-    fun findAllByItemNameLike(itemName: String, pageable: Pageable): Page<Medication>
+    fun findPageByItemNameLike(itemName: String, pageable: Pageable): Page<Medication>
 
-    @Query("select distinct m.itemName from Medication m ")
+    @Query("select m from Medication m where m.itemName like %:itemName%")
+    fun findAllByItemName(itemName: String) : List<Medication>
+
+    @Query("select distinct m.keyword from Medication m ")
     fun findAllByDistinctItemName() : List<String>
+
+    fun findByItemSeq(long: Long) : Medication
 }

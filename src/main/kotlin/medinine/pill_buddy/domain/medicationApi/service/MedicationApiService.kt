@@ -10,6 +10,7 @@ import medinine.pill_buddy.domain.medicationApi.entity.Medication
 import medinine.pill_buddy.domain.medicationApi.repository.MedicationApiRepository
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
+import medinine.pill_buddy.log
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
@@ -44,9 +45,58 @@ class MedicationApiService(
     @Value("\${openApi.callbackUrl}")
     private var callbackUrl: String? = null
 
+    @Transactional
+    fun synchronizeDB() {
+        val keywordList = medicationApiRepository.findAllByDistinctItemName()
+        for (keyword in keywordList) {
+            val newMedicationList = createDto(MedicationForm(itemName = keyword)).map { modelMapper.map(it,Medication::class.java) }
+            val oldMedicationList = medicationApiRepository.findAllByItemName(keyword)
+            sizeSynchronize(newMedicationList, oldMedicationList)
+            val newMedicationMap = newMedicationList.associateBy { it.itemSeq }
+            for (oldMedication in oldMedicationList) {
+                val newMedication = newMedicationMap[oldMedication.itemSeq]
+                newMedication?.let {
+                    oldMedication.apply {
+                        dirtyChecking(it)
+                    }
+                }
+            }
+
+        }
+    }
+
+    fun sizeSynchronize(
+        newMedicationList: List<Medication>,
+        oldMedicationList: List<Medication>
+    ) {
+        if (newMedicationList.size > oldMedicationList.size) {
+            val newMedications = newMedicationList.toMutableList()
+            val oldMedications = oldMedicationList.toMutableList()
+            val newMedicationMap = newMedicationList.associateBy { it.itemSeq }
+            for (oldMedication in oldMedications) {
+                newMedications.remove(newMedicationMap[oldMedication.itemSeq])
+            }
+            medicationApiRepository.saveAll(newMedications)
+
+
+        }else if(newMedicationList.size < oldMedicationList.size){
+
+            val newMedications = newMedicationList.toMutableList()
+            val oldMedications = oldMedicationList.toMutableList()
+            val oldMedicationMap = oldMedicationList.associateBy { it.itemSeq }
+            for (newMedication in newMedications) {
+                oldMedications.remove(oldMedicationMap[newMedication.itemSeq])
+            }
+
+            medicationApiRepository.deleteAll(oldMedications)
+
+        }
+    }
+
     fun createDto(medicationForm: MedicationForm): List<MedicationDTO> {
         try {
             var jsonToString = restTemplate.getForObject(createUrl(medicationForm, 1), String::class.java)
+
             val totalCount = getTotalCount(jsonToString?:throw PillBuddyCustomException(ErrorCode.ERROR_CONNECTION))
             val medicationDTOList = getDtoFromApi(jsonToString)
             if (totalCount > numOfRows) {
@@ -67,17 +117,34 @@ class MedicationApiService(
         }
     }
 
+    private fun Medication.dirtyChecking(it: Medication) {
+        this.itemName = it.itemName
+        entpName = it.entpName
+        seQesitm = it.seQesitm
+        atpnQesitm = it.atpnQesitm
+        efcyQesitm = it.efcyQesitm
+        intrcQesitm = it.intrcQesitm
+        atpnWarnQesitm = it.atpnWarnQesitm
+        depositMethodQesitm = it.depositMethodQesitm
+        useMethodQesitm = it.useMethodQesitm
+        itemImagePath = it.itemImagePath
+    }
+
     @Transactional(readOnly = true)
-    fun findAllByName(itemName: String, pageNo: Int, numOfRows: Int): Page<MedicationDTO> {
+    fun findPageByName(itemName: String, pageNo: Int, numOfRows: Int): Page<MedicationDTO> {
         val pageRequest = PageRequest.of(pageNo, numOfRows, Sort.by(Sort.Direction.ASC, "itemSeq"))
-        val allByItemNameLike = medicationApiRepository.findAllByItemNameLike(itemName, pageRequest)
+        val allByItemNameLike = medicationApiRepository.findPageByItemNameLike(itemName, pageRequest)
         if(pageNo> allByItemNameLike.totalPages) throw PillBuddyCustomException(ErrorCode.OUT_OF_PAGE)
         return allByItemNameLike.map { modelMapper.map(it,MedicationDTO::class.java) }
     }
 
     @Transactional
-    fun saveMedication(medicationDTOList: List<MedicationDTO>) {
-        val medicationList = medicationDTOList.map { modelMapper.map(it,Medication::class.java) }
+    fun saveMedication(medicationDTOList: List<MedicationDTO>,keyword : String) {
+        val medicationList = medicationDTOList.map {
+            val medication = modelMapper.map(it, Medication::class.java)
+            medication.keyword =  keyword
+            medication
+        }
         medicationApiRepository.saveAll(medicationList)
     }
 
@@ -97,6 +164,7 @@ class MedicationApiService(
     }
 
     private fun createUrl(medicationForm: MedicationForm, pageNo: Int): URI {
+        log.info("약 이름 : ${medicationForm.itemName}}")
         val encodedItemName = stringEncoding(medicationForm.itemName)
         var url =
             "$callbackUrl?serviceKey=$serviceKey&type=$dataType&itemName=$encodedItemName&pageNo=$pageNo&numOfRows=$numOfRows"
@@ -108,6 +176,7 @@ class MedicationApiService(
             val encodedItemSeq = stringEncoding(medicationForm.itemSeq)
             url += "&itemSeq=$encodedItemSeq"
         }
+        log.info("최종 url $url")
         return URI.create(url)
     }
 

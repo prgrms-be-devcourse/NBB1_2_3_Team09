@@ -40,10 +40,10 @@ internal class MedicationApiControllerTest( @Autowired val mockMvc: MockMvc ){
     fun setUp() {
         val medicationDTO = MedicationDTO("아스피린")
         val medicationList = listOf(medicationDTO)
-        Mockito.`when`(medicationApiService.findAllByName("아스피린", 0, 10)).thenReturn(PageImpl(medicationList))
-        Mockito.`when`(medicationApiService.findAllByName("아스피린", 1, 10))
+        Mockito.`when`(medicationApiService.findPageByName("아스피린", 0, 10)).thenReturn(PageImpl(medicationList))
+        Mockito.`when`(medicationApiService.findPageByName("아스피린", 1, 10))
             .thenThrow(PillBuddyCustomException(ErrorCode.OUT_OF_PAGE))
-        Mockito.`when`(medicationApiService.findAllByName("에러발생", 0, 10)).thenReturn(PageImpl(listOf()))
+        Mockito.`when`(medicationApiService.findPageByName("에러발생", 0, 10)).thenReturn(PageImpl(listOf()))
         Mockito.`when`(medicationApiService.createDto(MedicationForm("에러발생"))).thenThrow(PillBuddyCustomException(ErrorCode.ERROR_CONNECTION))
     }
 
