@@ -15,7 +15,6 @@ enum class ErrorCode(
     USER_ALREADY_REGISTERED_PHONE_NUMBER(HttpStatus.CONFLICT, "이미 등록된 전화번호입니다."),
     USER_INVALID_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 사용자 유형입니다."),
 
-    PROFILE_INVALID_FILE(HttpStatus.BAD_REQUEST, "잘못된 이미지 파일입니다."),
     PROFILE_INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST, "이미지 파일만 업로드할 수 있습니다."),
     PROFILE_NOT_SUPPORT_FILE_TYPE(HttpStatus.BAD_REQUEST, "지원하지 않는 파일 형식입니다."),
     PROFILE_BLANK_FILE_NAME(HttpStatus.BAD_REQUEST, "파일 이름은 공백일 수 없습니다."),
