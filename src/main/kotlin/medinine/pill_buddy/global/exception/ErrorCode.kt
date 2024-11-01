@@ -14,8 +14,8 @@ enum class ErrorCode(
     USER_ALREADY_REGISTERED_LOGIN_ID(HttpStatus.CONFLICT, "이미 등록된 아이디입니다."),
     USER_ALREADY_REGISTERED_PHONE_NUMBER(HttpStatus.CONFLICT, "이미 등록된 전화번호입니다."),
     USER_INVALID_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 사용자 유형입니다."),
+    USER_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 이름을 찾을 수 없습니다."),
 
-    PROFILE_INVALID_FILE(HttpStatus.BAD_REQUEST, "잘못된 이미지 파일입니다."),
     PROFILE_INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST, "이미지 파일만 업로드할 수 있습니다."),
     PROFILE_NOT_SUPPORT_FILE_TYPE(HttpStatus.BAD_REQUEST, "지원하지 않는 파일 형식입니다."),
     PROFILE_BLANK_FILE_NAME(HttpStatus.BAD_REQUEST, "파일 이름은 공백일 수 없습니다."),
@@ -33,6 +33,7 @@ enum class ErrorCode(
     MEDICATION_NOT_MODIFIED(HttpStatus.CONFLICT, "약 정보 수정에 실패했습니다."),
     MEDICATION_NOT_VALID(HttpStatus.BAD_REQUEST, "유효하지 않는 약 정보입니다."),
     MEDICATION_IS_NULL(HttpStatus.NOT_FOUND, "현재 복용중인 약이 없습니다."),
+    MEDICATION_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "약 이름을 찾을 수 없습니다."),
 
     CARETAKER_CAREGIVER_NOT_FOUND(HttpStatus.CONFLICT, "부모 정보 등록에 실패했습니다"),
     CARETAKER_CAREGIVER_REMOVED(HttpStatus.CONFLICT, "부모 정보 삭제에 실패했습니다"),
@@ -64,6 +65,7 @@ enum class ErrorCode(
 
     MESSAGE_SEND_FAILED(HttpStatus.BAD_REQUEST, "메시지 전송에 실패했습니다."),
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알람 정보를 찾을 수 없습니다."),
+    PHONE_NUMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "전화번호를 찾을 수 없습니다."),
 
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "저장된 기록을 찾을 수 없습니다"),
     RECORD_NOT_REGISTERED(HttpStatus.CONFLICT, "기록 저장에 실패 했습니다"),

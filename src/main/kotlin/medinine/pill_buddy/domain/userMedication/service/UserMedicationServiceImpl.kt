@@ -49,15 +49,11 @@ class UserMedicationServiceImpl(
         if (userMedication.caretaker?.id != caretakerId) {
             throw PillBuddyCustomException(ErrorCode.MEDICATION_NOT_VALID)
         }
-        return try {
-            userMedicationDTO.name?.let { userMedication.updateName(it) }
-            userMedicationDTO.description?.let { userMedication.updateDescription(it) }
-            userMedicationDTO.dosage?.let { userMedication.updateDosage(it) }
 
-            UserMedicationDTO.entityToDTO(userMedication)
-        } catch (e: PillBuddyCustomException) {
-            log.error(e.message, e)
-            throw e
-        }
+        userMedicationDTO.name?.let { userMedication.updateName(it) }
+        userMedicationDTO.description?.let { userMedication.updateDescription(it) }
+        userMedicationDTO.dosage?.let { userMedication.updateDosage(it) }
+
+        return UserMedicationDTO.entityToDTO(userMedication)
     }
 }
