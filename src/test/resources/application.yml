@@ -27,9 +27,9 @@ jwt:
     access-expiration-time: 1800000
     refresh-expiration-time: 18000000
 
-#file:
-#  path: test-upload
-#
+file:
+  path: test-upload
+
 #openApi:
 #  dataType: json
 #  serviceKey: ${LOCAL_SERVICE_KEY}
