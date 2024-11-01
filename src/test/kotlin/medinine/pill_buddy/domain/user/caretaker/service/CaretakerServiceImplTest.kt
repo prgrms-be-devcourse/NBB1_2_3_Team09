@@ -25,4 +25,13 @@ class CaretakerServiceImplTest {
         assertThat(register.caretaker?.id).isEqualTo(1L)
         assertThat(register.caregiver?.id).isEqualTo(3L)
     }
+
+    @Test
+    @DisplayName("보호자 삭제 테스트")
+    fun removeCaregiverTest() {
+        val caretakerId = 2L
+        val caregiverId = 2L
+
+        caretakerService.remove(caretakerId, caretakerId)
+    }
 }
