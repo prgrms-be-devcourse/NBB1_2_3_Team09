@@ -15,4 +15,8 @@ class Image(
     @Column(name = "url", nullable = false)
     var url : String
 
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+    fun updateUrl(url : String) {
+        this.url = url
+    }
+}
