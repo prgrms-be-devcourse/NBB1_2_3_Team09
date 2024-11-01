@@ -2,7 +2,6 @@ package medinine.pill_buddy.domain.notification.controller
 
 import medinine.pill_buddy.domain.notification.dto.NotificationDTO
 import medinine.pill_buddy.domain.notification.service.NotificationService
-import medinine.pill_buddy.log
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.Scheduled
