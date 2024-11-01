@@ -12,41 +12,43 @@ import java.time.LocalDateTime
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class Medication(
+class Medication: Persistable<Long> {
 
     @Id
-    var itemSeq: Long,
+    var itemSeq: Long = 0
 
     @Column(length = 100)
-    var entpName: String,
+    var entpName: String? = null
 
     @Column(nullable = false, length = 100)
-    var itemName: String,
+    var itemName: String? = null
 
     @Column(columnDefinition = "text")
-    var efcyQesitm: String,
+    var efcyQesitm: String? = null
 
     @Column(columnDefinition = "text")
-    var useMethodQesitm: String,
+    var useMethodQesitm: String? = null
 
     @Column(columnDefinition = "text")
-    var atpnWarnQesitm: String,
+    var atpnWarnQesitm: String? = null
 
     @Column(columnDefinition = "text")
-    var atpnQesitm: String,
+    var atpnQesitm: String? = null
 
     @Column(columnDefinition = "text")
-    var intrcQesitm: String,
+    var intrcQesitm: String? = null
 
     @Column(columnDefinition = "text")
-    var seQesitm: String,
+    var seQesitm: String? = null
 
     @Column(columnDefinition = "text")
-    var depositMethodQesitm: String,
+    var depositMethodQesitm: String? = null
 
     @Column(columnDefinition = "text")
-    var itemImagePath: String
-) : Persistable<Long> {
+    var itemImagePath: String? = null
+
+    @Column(length = 100)
+    var keyword : String? = null
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -54,7 +56,7 @@ class Medication(
 
     @LastModifiedDate
     @Column(name = "modified_at")
-    private var modifiedAt: LocalDateTime? = null
+    var modifiedAt: LocalDateTime? = null
 
     override fun getId(): Long = itemSeq
 
