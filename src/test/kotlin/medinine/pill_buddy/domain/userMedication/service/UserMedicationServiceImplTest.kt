@@ -24,7 +24,7 @@ class UserMedicationServiceImplTest {
     @Transactional
     @DisplayName("약 정보 등록 테스트")
     fun userMedicationRegister() {
-        val caretakerId = 2L
+        val caretakerId = 1L
         val userMedicationDTO = UserMedicationDTO(
             name = "텐텐",
             description = "맛있는 영양제",

@@ -17,12 +17,12 @@ class CaretakerServiceImplTest {
     @Test
     @DisplayName("보호자 등록 테스트")
     fun addCaregiverTest() {
-        val caretakerId = 2L
-        val caregiverId = 1L
+        val caretakerId = 1L
+        val caregiverId = 3L
 
         val register: CaretakerCaregiverDTO = caretakerService.register(caretakerId, caregiverId)
 
-        assertThat(register.caretaker?.id).isEqualTo(2L)
-        assertThat(register.caregiver?.id).isEqualTo(1L)
+        assertThat(register.caretaker?.id).isEqualTo(1L)
+        assertThat(register.caregiver?.id).isEqualTo(3L)
     }
 }
