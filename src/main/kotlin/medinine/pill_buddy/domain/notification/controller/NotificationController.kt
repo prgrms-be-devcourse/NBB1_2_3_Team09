@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/notification")
@@ -25,7 +26,7 @@ class NotificationController(
 
     @Scheduled(cron = "0 * * * * ?")
     fun checkAndSendNotifications() {
-        notificationService.sendNotifications()
+        notificationService.sendNotifications(LocalDateTime.now())
     }
 }
 

@@ -23,7 +23,7 @@ class NotificationService(
     private val caretakerCaregiverRepository: CaretakerCaregiverRepository,
     private val smsProvider: SmsProvider
 ) {
-    // 주어진 사용자 약물 ID로부터 약물을 찾아 알림을 생성합니다.
+    // 주어진 사용자 약 ID로부터 약을 찾아 알림을 생성합니다.
     fun createNotifications(userMedicationId: Long): List<NotificationDTO> {
         val userMedication = userMedicationRepository.findById(userMedicationId)
             .orElseThrow { PillBuddyCustomException(ErrorCode.MEDICATION_NOT_FOUND) }
@@ -60,20 +60,19 @@ class NotificationService(
     }
 
     // 현재 시간과 1분 후의 시간을 계산하여 등록된 알림을 조회 후 전송합니다.
-    fun sendNotifications() {
-        val now = LocalDateTime.now()
-        val nowPlusOneMinute = now.plusMinutes(1)
+    fun sendNotifications(currentTime: LocalDateTime) {
+        val nowPlusOneMinute = currentTime.plusMinutes(1)
 
-        val notifications = notificationRepository.findByNotificationTime(now, nowPlusOneMinute)
+        val notifications = notificationRepository.findByNotificationTime(currentTime, nowPlusOneMinute)
         if (notifications.isNotEmpty()) {
-            log.info("현재 시간: $now. 등록된 알림 개수: ${notifications.size}. 알림을 처리 중입니다.")
+            log.info("현재 시간: $currentTime. 등록된 알림 개수: ${notifications.size}. 알림을 처리 중입니다.")
             notifications.forEach { notification ->
                 sendNotificationToCaretaker(notification)
                 sendNotificationToCaregivers(notification)
                 notificationRepository.delete(notification)
             }
         } else {
-            log.info("현재 시간: $now. 등록된 알림이 없습니다.")
+            log.info("현재 시간: $currentTime. 등록된 알림이 없습니다.")
         }
     }
 
