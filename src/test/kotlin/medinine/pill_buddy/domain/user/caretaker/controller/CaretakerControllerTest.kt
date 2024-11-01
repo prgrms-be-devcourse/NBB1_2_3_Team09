@@ -1,18 +1,23 @@
 package medinine.pill_buddy.domain.user.caretaker.controller
 
-import medinine.pill_buddy.domain.user.caretaker.dto.CaretakerCaregiverDTO
+import medinine.pill_buddy.domain.record.dto.RecordDTO
+import medinine.pill_buddy.domain.record.entity.Taken
+import medinine.pill_buddy.domain.userMedication.service.UserMedicationService
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
-import org.mockito.Mockito.`when`
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import kotlin.test.Test
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,31 +27,47 @@ class CaretakerControllerTest {
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var caretakerController: CaretakerController
+    private lateinit var userMedicationService: UserMedicationService
 
-    @Test
-    @DisplayName("사용자 기능 중 보호자 추가 기능 테스트")
-    fun addCaregiver() {
-        val caretakerId = 2L
-        val caregiverId = 1L
-        val response = ResponseEntity(CaretakerCaregiverDTO(), HttpStatus.OK)
+    private lateinit var expectedRecords: List<RecordDTO>
+    private val caretakerId = 1L
+    private val date = LocalDate.of(2024, 9, 25)
 
-        `when`(caretakerController.addCaregiver(caretakerId, caregiverId)).thenReturn(response)
+    @BeforeEach
+    fun setUp() {
+        expectedRecords = listOf(
+            RecordDTO(
+                id = 1,
+                date = LocalDateTime.of(2024, 9, 25, 9, 0),
+                medicationName = "Aspirin",
+                taken = Taken.TAKEN
+            )
+        )
+        `when`(userMedicationService.getUserMedicationRecordsByDate(caretakerId, date.atStartOfDay())).thenReturn(
+            expectedRecords
+        )
+    }
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/caretakers/$caretakerId/caregivers/$caregiverId"))
-            .andExpect(status().isOk)
+    @AfterEach
+    fun tearDown() {
+        reset(userMedicationService)
     }
 
     @Test
-    @DisplayName("사용자 기능 중 보호자 삭제 기능 테스트")
-    fun deleteCaregiver() {
-        val caretakerId = 1L
-        val caregiverId = 1L
-        val response = ResponseEntity(mapOf("Process" to "Success"), HttpStatus.OK)
+    @DisplayName("약 복용 여부 확인")
+    fun getRecordsByDate() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/caretakers/$caretakerId/user-medications/records")
+                .param("date", date.toString())
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(expectedRecords[0].id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].date").value(expectedRecords[0].date.toString()))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].medicationName").value(expectedRecords[0].medicationName))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].taken").value(expectedRecords[0].taken.toString()))
 
-        `when`(caretakerController.deleteCaregiver(caretakerId, caregiverId)).thenReturn(response)
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/caretakers/$caretakerId/caregivers/$caregiverId"))
-            .andExpect(status().isOk)
+        verify(userMedicationService).getUserMedicationRecordsByDate(caretakerId, date.atStartOfDay())
     }
 }
