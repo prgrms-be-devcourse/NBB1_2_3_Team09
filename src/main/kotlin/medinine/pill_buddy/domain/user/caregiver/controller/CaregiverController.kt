@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/caregivers/{caregiverId}/caretakers")
-@Tag(name = "보호자 기능", description = "보호자는 사용자를 등록,삭제할 수 있으며, 사용자의 약 정보를 확인할 수 있다.")
+@Tag(name = "보호자 기능", description = "보호자는 사용자를 등록, 삭제할 수 있으며, 사용자의 약 정보를 확인할 수 있다.")
 class CaregiverController(
     private val caregiverService: CaregiverService
 ) {
