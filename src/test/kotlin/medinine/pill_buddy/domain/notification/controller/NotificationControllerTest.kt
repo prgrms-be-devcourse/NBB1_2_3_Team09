@@ -116,8 +116,7 @@ class NotificationControllerTest {
             get("$BASE_URL/$caretakerId")
             .contentType(MediaType.APPLICATION_JSON)
         )
-            .andExpect(status().isOk
-            )
+            .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json("""
             [
