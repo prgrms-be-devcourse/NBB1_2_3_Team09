@@ -196,7 +196,7 @@ class NotificationService(
         val notification = notificationRepository.findById(notificationId)
             .orElseThrow { PillBuddyCustomException(ErrorCode.NOTIFICATION_NOT_FOUND) }
 
-        val notificationTime = updateNotification.notificationTime ?: throw PillBuddyCustomException(ErrorCode.NOTIFICATION_TIME_NOT_FOUND)
+        val notificationTime = updateNotification.notificationTime
         notification.changeNotificationTime(notificationTime)
 
         return NotificationDTO.convertToDTO(notification)
