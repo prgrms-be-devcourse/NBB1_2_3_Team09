@@ -13,6 +13,7 @@ import medinine.pill_buddy.domain.userMedication.entity.UserMedication
 import medinine.pill_buddy.domain.userMedication.repository.UserMedicationRepository
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.mockito.Mockito.*
@@ -229,6 +230,44 @@ class NotificationServiceTest(
                 caregiver.phoneNumber,
                 userMedication.name,
                 caretaker.username)
+        }
+    }
+
+    @Nested
+    @DisplayName("알림 조회 테스트")
+    inner class findNotificationTests {
+
+        @Test
+        @DisplayName("성공 - 알림 조회 후 UserNotificationDTO 리스트 반환")
+        fun findNotification() {
+            // given
+            val userMedication = userMedicationRepository.findAll().first()
+            val userMedicationId = userMedication.id ?: throw IllegalStateException()
+            notificationService.createNotifications(userMedicationId)
+
+            val caretaker = caretakerRepository.findAll().first()
+            val caretakerId = caretaker.id ?: throw IllegalStateException()
+
+
+            // when
+            val userNotificationDTOs = notificationService.findNotification(caretakerId)
+
+            // then
+            assertNotNull(userNotificationDTOs)
+            assertThat(userNotificationDTOs).hasSize(7)
+        }
+
+        @Test
+        @DisplayName("실패 - 존재하지 않는 사용자 ID로 조회 시 예외 발생")
+        fun findNotification_NoCaretakerID() {
+            // given
+            val caretakerId = 999L
+
+            // when&then
+            val exception = assertThrows<PillBuddyCustomException> {
+                notificationService.findNotification(caretakerId)
+            }
+            assertEquals(ErrorCode.CARETAKER_NOT_FOUND, exception.errorCode)
         }
     }
 }
