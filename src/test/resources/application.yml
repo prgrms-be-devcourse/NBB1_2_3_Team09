@@ -27,6 +27,17 @@ jwt:
     access-expiration-time: 1800000
     refresh-expiration-time: 18000000
 
+oauth:
+  kakao:
+    kakao-password: ${KAKAO_PASSWORD}
+    client-id: ${KAKAO_CLIENT_ID}
+    caregiver-redirect-uri: ${KAKAO_CAREGIVER_REDIRECT_URI}
+    caretaker-redirect-uri: ${KAKAO_CARETAKER_REDIRECT_URI}
+    authorization-grant-type: ${KAKAO_AUTHORIZATION_GRANT_TYPE}
+    authorization-uri: ${KAKAO_AUTHORIZATION_URI}
+    token-uri: ${KAKAO_TOKEN_URI}
+    user-info-uri: ${KAKAO_USER_INFO_URI}
+
 file:
   path: test-upload
 

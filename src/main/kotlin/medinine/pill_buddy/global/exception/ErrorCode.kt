@@ -22,6 +22,9 @@ enum class ErrorCode(
     PROFILE_CREATE_DIRECTORY_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "업로드 디렉토리를 생성할 수 없습니다."),
     PROFILE_DELETE_FILE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "파일을 삭제할 수 없습니다."),
 
+    KAKAO_ACCESS_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "카카오 엑세스 토큰을 찾을 수 없습니다."),
+    KAKAO_USER_INFO_NOT_FOUND(HttpStatus.BAD_REQUEST, "카카오 사용자 정보를 찾을 수 없습니다."),
+
     JWT_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "유효하지 않은 JWT 토큰입니다."),
     JWT_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "JWT 토큰이 만료되었습니다."),
     JWT_TOKEN_UNSUPPORTED(HttpStatus.BAD_REQUEST, "지원되지 않는 JWT 토큰입니다."),

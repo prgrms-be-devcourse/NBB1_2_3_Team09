@@ -19,8 +19,8 @@ abstract class User(
     @Column(name = "email", length = 50, unique = true, nullable = false)
     var email: String,
 
-    @Column(name = "phone_number", length = 20, unique = true, nullable = false)
-    var phoneNumber: String,
+    @Column(name = "phone_number", length = 20, unique = true)
+    var phoneNumber: String?,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

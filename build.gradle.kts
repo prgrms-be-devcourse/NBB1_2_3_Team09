@@ -37,6 +37,12 @@ dependencies {
     // Redis
     implementation ("org.springframework.boot:spring-boot-starter-data-redis")
 
+    // OAuth2
+    implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
+
+    // Webflux
+    implementation ("org.springframework.boot:spring-boot-starter-webflux")
+
     //nurigo API
     implementation("net.nurigo:sdk:4.2.7")
 
