@@ -1,6 +1,8 @@
 package medinine.pill_buddy.domain.notification.service
 
+import medinine.pill_buddy.domain.notification.dto.UpdateNotificationDTO
 import medinine.pill_buddy.domain.notification.provider.SmsProvider
+import medinine.pill_buddy.domain.notification.repository.NotificationRepository
 import medinine.pill_buddy.domain.user.caregiver.entity.Caregiver
 import medinine.pill_buddy.domain.user.caregiver.repository.CaregiverRepository
 import medinine.pill_buddy.domain.user.caretaker.entity.Caretaker
@@ -38,7 +40,10 @@ class NotificationServiceTest(
     private val caretakerCaregiverRepository: CaretakerCaregiverRepository,
 
     @Autowired
-    private val caregiverRepository: CaregiverRepository
+    private val caregiverRepository: CaregiverRepository,
+
+    @Autowired
+    private val notificationRepository: NotificationRepository
 ) {
     @MockBean
     private lateinit var smsProvider: SmsProvider
@@ -238,7 +243,7 @@ class NotificationServiceTest(
     inner class findNotificationTests {
 
         @Test
-        @DisplayName("성공 - 알림 조회 후 UserNotificationDTO 리스트 반환")
+        @DisplayName("성공 - 알림 조회 후 NotificationDTO 리스트 반환")
         fun findNotification() {
             // given
             val userMedication = userMedicationRepository.findAll().first()
@@ -250,11 +255,11 @@ class NotificationServiceTest(
 
 
             // when
-            val userNotificationDTOs = notificationService.findNotification(caretakerId)
+            val notificationDTOs = notificationService.findNotification(caretakerId)
 
             // then
-            assertNotNull(userNotificationDTOs)
-            assertThat(userNotificationDTOs).hasSize(7)
+            assertNotNull(notificationDTOs)
+            assertThat(notificationDTOs).hasSize(7)
         }
 
         @Test
@@ -268,6 +273,52 @@ class NotificationServiceTest(
                 notificationService.findNotification(caretakerId)
             }
             assertEquals(ErrorCode.CARETAKER_NOT_FOUND, exception.errorCode)
+        }
+    }
+
+    @Nested
+    @DisplayName("알림 수정 테스트")
+    inner class UpdateNotificationTests {
+
+        @Test
+        @DisplayName("성공 - 알림 조회 후 NotificationDTO 리스트 반환")
+        fun updateNotification() {
+            // given
+            val userMedicationId = userMedicationRepository.findAll().first()?.id ?: throw IllegalStateException()
+            notificationService.createNotifications(userMedicationId)
+
+            val notification = notificationRepository.findAll().first()
+            val notificationId = notification.id ?: throw IllegalStateException()
+
+            val updateTime = fixedTime.plusDays(1)
+            val updateNotificationDTO = UpdateNotificationDTO(
+                notificationTime = updateTime
+            )
+
+            // when
+            notificationService.updateNotification(notificationId, updateNotificationDTO)
+
+            // then
+            val updatedNotification = notificationRepository.findById(notificationId)
+                .orElseThrow {PillBuddyCustomException(ErrorCode.NOTIFICATION_NOT_FOUND)}
+            assertEquals(updateTime, updatedNotification.notificationTime)
+        }
+
+        @Test
+        @DisplayName("실패 - 존재하지 않는 알림 ID로 조회 시 예외 발생")
+        fun updateNotification_NoNotificationID() {
+            // given
+            val notificationId = 999L
+            val updateTime = fixedTime.plusDays(1)
+            val updateNotificationDTO = UpdateNotificationDTO(
+                notificationTime = updateTime
+            )
+
+            // when&then
+            val exception = assertThrows<PillBuddyCustomException> {
+                notificationService.updateNotification(notificationId, updateNotificationDTO)
+            }
+            assertEquals(ErrorCode.NOTIFICATION_NOT_FOUND, exception.errorCode)
         }
     }
 }
