@@ -4,6 +4,9 @@ import medinine.pill_buddy.domain.notification.dto.NotificationDTO
 import medinine.pill_buddy.domain.notification.entity.Notification
 import medinine.pill_buddy.domain.notification.provider.SmsProvider
 import medinine.pill_buddy.domain.notification.repository.NotificationRepository
+import medinine.pill_buddy.domain.record.entity.Record
+import medinine.pill_buddy.domain.record.entity.Taken
+import medinine.pill_buddy.domain.user.caretaker.entity.CaretakerCaregiver
 import medinine.pill_buddy.domain.user.caretaker.repository.CaretakerCaregiverRepository
 import medinine.pill_buddy.domain.userMedication.entity.Frequency
 import medinine.pill_buddy.domain.userMedication.entity.UserMedication
@@ -14,6 +17,7 @@ import medinine.pill_buddy.log
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Service
 @Transactional
@@ -66,10 +70,9 @@ class NotificationService(
         val notifications = notificationRepository.findByNotificationTime(currentTime, nowPlusOneMinute)
         if (notifications.isNotEmpty()) {
             log.info("현재 시간: $currentTime. 등록된 알림 개수: ${notifications.size}. 알림을 처리 중입니다.")
-            notifications.forEach { notification ->
-                sendNotificationToCaretaker(notification)
-                sendNotificationToCaregivers(notification)
-                notificationRepository.delete(notification)
+            notifications.forEach {
+                sendNotificationToCaretaker(it)
+                sendNotificationToCaregivers(it)
             }
         } else {
             log.info("현재 시간: $currentTime. 등록된 알림이 없습니다.")
@@ -82,7 +85,7 @@ class NotificationService(
 
         try {
             smsProvider.sendNotification(phoneNumber, medicationName, userName)
-            log.info("Caretaker에게 메세지 전송 성공")
+            log.info("Caretaker에게 메세지를 전송하였습니다.")
         } catch (e: Exception) {
             throw PillBuddyCustomException(ErrorCode.MESSAGE_SEND_FAILED)
         }
@@ -97,10 +100,76 @@ class NotificationService(
                 val caregiverPhoneNumber = caretakerCaregiver.caregiver?.phoneNumber ?: throw PillBuddyCustomException(ErrorCode.PHONE_NUMBER_NOT_FOUND)
                 try {
                     smsProvider.sendNotification(caregiverPhoneNumber, medicationName, userName)
-                    log.info("Caregiver에게 메세지 전송 성공")
+                    log.info("Caregiver에게 메세지를 전송하였습니다.")
                 } catch (e: Exception) {
                     throw PillBuddyCustomException(ErrorCode.MESSAGE_SEND_FAILED)
                 }
+            }
+        }
+    }
+
+    // 약 복용 확인 메세지를 전송합니다.
+    fun checkAndSendForMissedMedications(currentTime: LocalDateTime) {
+        log.info("현재 시간: $currentTime. 사용자가 약을 복용 했는지 확인합니다.")
+        val userMedications = userMedicationRepository.findAll()
+
+        userMedications.forEach { checkRecords(it, currentTime) }
+    }
+
+    private fun checkRecords(userMedication: UserMedication, currentTime: LocalDateTime) {
+        val notifications = userMedication.notificationList
+        val records = userMedication.records
+
+        notifications.forEach {
+            if (!hasNotificationTimePassed(it.notificationTime, currentTime)) return@forEach
+
+            if (!wasTaken(it.notificationTime, records) && isTimeToNotify(it.notificationTime, currentTime)) {
+                log.info("사용자가 약을 복용하지 않은 채 15분이 지났습니다.")
+                sendMissedNotification(userMedication, it)
+            }
+        }
+    }
+
+    private fun hasNotificationTimePassed(notificationTime: LocalDateTime, currentTime: LocalDateTime): Boolean {
+        return currentTime.isAfter(notificationTime)
+    }
+
+    private fun wasTaken(notificationTime: LocalDateTime, records: MutableList<Record>): Boolean {
+        return records.any { record ->
+            record.date.isAfter(notificationTime) && record.taken == Taken.TAKEN
+        }
+    }
+
+    private fun isTimeToNotify(notificationTime: LocalDateTime, currentTime: LocalDateTime): Boolean {
+        val fewMinutesAfter = notificationTime.plusMinutes(15)
+        return currentTime.truncatedTo(ChronoUnit.MINUTES) == fewMinutesAfter.truncatedTo(ChronoUnit.MINUTES)
+    }
+
+    private fun sendMissedNotification(userMedication: UserMedication, notification: Notification) {
+        val caretakerCaregivers = findCaretakerCaregivers(userMedication)
+
+        if (caretakerCaregivers.isNotEmpty()) {
+            sendNotificationToCaregivers(caretakerCaregivers, notification)
+        } else {
+            throw PillBuddyCustomException(ErrorCode.CAREGIVER_NOT_FOUND)
+        }
+    }
+
+    private fun findCaretakerCaregivers(userMedication: UserMedication): List<CaretakerCaregiver> {
+        val caretaker = userMedication.caretaker ?: throw PillBuddyCustomException(ErrorCode.CARETAKER_NOT_FOUND)
+        return caretakerCaregiverRepository.findByCaretaker(caretaker)
+    }
+
+    private fun sendNotificationToCaregivers(caretakerCaregivers: List<CaretakerCaregiver>, notification: Notification) {
+        val (medicationName, userName) = getMedicationAndUserName(notification)
+
+        caretakerCaregivers.forEach {
+            val caregiverPhoneNumber = it.caregiver?.phoneNumber ?: throw PillBuddyCustomException(ErrorCode.PHONE_NUMBER_NOT_FOUND)
+            try {
+                smsProvider.sendCheckNotification(caregiverPhoneNumber, medicationName, userName)
+                log.info("Caregiver에게 메세지를 전송하였습니다.")
+            } catch (e: Exception) {
+                throw PillBuddyCustomException(ErrorCode.MESSAGE_SEND_FAILED)
             }
         }
     }
