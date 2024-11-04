@@ -33,10 +33,16 @@ class NotificationController(
         return ResponseEntity.ok(notificationService.findNotification(caretakerId))
     }
 
-    @PatchMapping("/{notificationId}")
+    @PatchMapping("/{notificationId}/time")
     fun updateNotification(@PathVariable notificationId: Long,
                            @RequestBody @Valid updateNotification: UpdateNotificationDTO): ResponseEntity<NotificationDTO> {
         return ResponseEntity.ok(notificationService.updateNotification(notificationId, updateNotification))
+    }
+
+    @DeleteMapping("/{notificationId}")
+    fun deleteNotification(@PathVariable notificationId: Long): ResponseEntity<Void> {
+        notificationService.deleteNotification(notificationId)
+        return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 }
 
