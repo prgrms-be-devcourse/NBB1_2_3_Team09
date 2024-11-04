@@ -26,6 +26,7 @@ class NotificationController(
     @Scheduled(cron = "0 * * * * ?")
     fun checkAndSendNotifications() {
         notificationService.sendNotifications(LocalDateTime.now())
+        notificationService.checkAndSendForMissedMedications(LocalDateTime.now())
     }
 }
 
