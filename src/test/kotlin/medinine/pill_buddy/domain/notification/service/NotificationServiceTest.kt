@@ -1,5 +1,6 @@
 package medinine.pill_buddy.domain.notification.service
 
+import medinine.pill_buddy.domain.notification.entity.Notification
 import medinine.pill_buddy.domain.notification.provider.SmsProvider
 import medinine.pill_buddy.domain.user.caregiver.entity.Caregiver
 import medinine.pill_buddy.domain.user.caregiver.repository.CaregiverRepository
@@ -185,6 +186,54 @@ class NotificationServiceTest(
                 notificationService.sendNotifications(fixedTime)
             }
             assertEquals(ErrorCode.MESSAGE_SEND_FAILED, exception.errorCode)
+        }
+    }
+
+    @Nested
+    @DisplayName("약 복용 확인 알림 테스트")
+    inner class CheckAndSendForMissedMedicationsTests {
+
+        @Test
+        @DisplayName("성공 - 약 복용 알림 전송")
+        fun sendForMissedMedications() {
+            // given
+            val userMedication = userMedicationRepository.findAll().first()
+            val userMedicationId = userMedication.id ?: throw IllegalStateException()
+            notificationService.createNotifications(userMedicationId)
+
+            val caretaker = caretakerRepository.findAll().first()
+            val caregiver = caregiverRepository.findAll().first()
+
+            // when
+            notificationService.checkAndSendForMissedMedications(fixedTime.plusMinutes(15))
+
+            // then
+            verify(smsProvider, times(1)).sendCheckNotification(
+                caregiver.phoneNumber,
+                userMedication.name,
+                caretaker.username
+            )
+        }
+
+        @Test
+        @DisplayName("실패 - 약 복용 알림이 전송되지 않음")
+        fun sendForMissedMedications_NoNotificationSent() {
+            // given
+            val userMedication = userMedicationRepository.findAll().first()
+            val userMedicationId = userMedication.id ?: throw IllegalStateException()
+            notificationService.createNotifications(userMedicationId)
+
+            val caretaker = caretakerRepository.findAll().first()
+            val caregiver = caregiverRepository.findAll().first()
+
+            // when
+            notificationService.checkAndSendForMissedMedications(fixedTime.minusDays(1))
+
+            // then
+            verify(smsProvider, never()).sendCheckNotification(
+                caregiver.phoneNumber,
+                userMedication.name,
+                caretaker.username)
         }
     }
 }
