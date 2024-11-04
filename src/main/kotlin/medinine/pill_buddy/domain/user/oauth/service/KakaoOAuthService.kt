@@ -44,19 +44,16 @@ class KakaoOAuthService(
         val email: String = profile.kakaoAccount.email
 
         // 존재하지 않는 회원일 경우 회원 가입
-        if (isEmailExists(email)) {
-            throw PillBuddyCustomException(ErrorCode.USER_ALREADY_REGISTERED_EMAIL)
+        if (!isEmailExists(email, userType)) {
+            userAppend(profile, userType)
         }
-        userAppend(profile, userType)
 
-        // caregiver or caretaker 조회 후, Jwt 토큰 반환
-        if (userType === CAREGIVER) {
-            val caregiver: Caregiver = caregiverRepository.findByEmail(email)
-                ?: throw PillBuddyCustomException(ErrorCode.USER_NOT_FOUND)
+        // 이메일을 통해 회원 조회 후, Jwt 토큰 반환
+        if (userType == CAREGIVER) {
+            val caregiver: Caregiver = caregiverRepository.findByEmail(email)!!
             return jwtTokenProvider.generateToken(caregiver.loginId)
         } else {
-            val caretaker: Caretaker = caretakerRepository.findByEmail(email)
-                ?: throw PillBuddyCustomException(ErrorCode.USER_NOT_FOUND)
+            val caretaker: Caretaker = caretakerRepository.findByEmail(email)!!
             return jwtTokenProvider.generateToken(caretaker.loginId)
         }
     }
@@ -89,7 +86,10 @@ class KakaoOAuthService(
         }
     }
 
-    private fun isEmailExists(email: String): Boolean {
-        return caretakerRepository.existsByEmail(email) || caregiverRepository.existsByEmail(email)
+    private fun isEmailExists(email: String, userType: UserType): Boolean {
+        return when(userType) {
+            CARETAKER -> caretakerRepository.existsByEmail(email)
+            CAREGIVER -> caregiverRepository.existsByEmail(email)
+        }
     }
 }
