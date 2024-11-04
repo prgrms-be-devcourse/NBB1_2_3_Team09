@@ -2,9 +2,9 @@ package medinine.pill_buddy.domain.user.caretaker.controller
 
 import lombok.RequiredArgsConstructor
 import medinine.pill_buddy.domain.record.dto.RecordDTO
+import medinine.pill_buddy.domain.record.service.RecordService
 import medinine.pill_buddy.domain.user.caretaker.dto.CaretakerCaregiverDTO
 import medinine.pill_buddy.domain.user.caretaker.service.CaretakerService
-import medinine.pill_buddy.domain.userMedication.entity.MedicationType
 import medinine.pill_buddy.domain.userMedication.service.UserMedicationService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -18,7 +18,8 @@ import java.time.LocalDate
 @RequestMapping("/api/caretakers")
 class CaretakerController(
     private val caretakerService: CaretakerService,
-    private val userMedicationService: UserMedicationService
+    private val userMedicationService: UserMedicationService,
+    private val recordService: RecordService
 ) {
     @PostMapping("/{caretakerId}/caregivers/{caregiverId}")
     fun addCaregiver(
@@ -44,5 +45,20 @@ class CaretakerController(
     ): ResponseEntity<List<RecordDTO>> {
         val records = userMedicationService.getUserMedicationRecordsByDate(caretakerId, date.atStartOfDay())
         return ResponseEntity.ok(records)
+    }
+
+    @PostMapping("/user-medications/{userMedicationId}/records")
+    fun addRecord(@PathVariable userMedicationId: Long): ResponseEntity<RecordDTO> {
+        val savedRecordDTO = recordService.registerRecord(userMedicationId)
+        return ResponseEntity.ok(savedRecordDTO)
+    }
+
+    @PutMapping("/user-medications/{userMedicationId}/records/{recordId}")
+    fun updateRecord(
+        @PathVariable userMedicationId: Long,
+        @PathVariable recordId: Long
+    ): ResponseEntity<RecordDTO> {
+        val savedRecordDTO = recordService.modifyTaken(userMedicationId, recordId)
+        return ResponseEntity.ok(savedRecordDTO)
     }
 }
