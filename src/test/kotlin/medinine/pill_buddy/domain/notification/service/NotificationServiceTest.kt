@@ -204,13 +204,14 @@ class NotificationServiceTest(
 
             val caretaker = caretakerRepository.findAll().first()
             val caregiver = caregiverRepository.findAll().first()
+            val cgPhoneNumber = caregiver.phoneNumber ?: throw IllegalStateException()
 
             // when
             notificationService.checkAndSendForMissedMedications(fixedTime.plusMinutes(15))
 
             // then
             verify(smsProvider, times(1)).sendCheckNotification(
-                caregiver.phoneNumber,
+                cgPhoneNumber,
                 userMedication.name,
                 caretaker.username
             )
@@ -226,13 +227,14 @@ class NotificationServiceTest(
 
             val caretaker = caretakerRepository.findAll().first()
             val caregiver = caregiverRepository.findAll().first()
+            val cgPhoneNumber = caregiver.phoneNumber ?: throw IllegalStateException()
 
             // when
             notificationService.checkAndSendForMissedMedications(fixedTime.minusDays(1))
 
             // then
             verify(smsProvider, never()).sendCheckNotification(
-                caregiver.phoneNumber,
+                cgPhoneNumber,
                 userMedication.name,
                 caretaker.username)
         }
@@ -320,5 +322,41 @@ class NotificationServiceTest(
             }
             assertEquals(ErrorCode.NOTIFICATION_NOT_FOUND, exception.errorCode)
         }
+    }
+
+    @Nested
+    @DisplayName("알림 수정 테스트")
+    inner class DeleteNotificationTests {
+
+        @Test
+        @DisplayName("성공 - 주어진 알림 Id에 해당하는 알림 삭제")
+        fun deleteNotification() {
+            // given
+            val userMedicationId = userMedicationRepository.findAll().first()?.id ?: throw IllegalStateException()
+            notificationService.createNotifications(userMedicationId)
+
+            val notification = notificationRepository.findAll().first()
+            val notificationId = notification.id ?: throw IllegalStateException()
+
+            // when
+            notificationService.deleteNotification(notificationId)
+
+            // then
+            val deletedNotification = notificationRepository.findById(notificationId)
+            assertTrue(deletedNotification.isEmpty)
+        }
+    }
+
+    @Test
+    @DisplayName("실패 - 존재하지 않는 알림 ID로 삭제 시 예외 발생")
+    fun updateNotification_NoNotificationID() {
+        // given
+        val notificationId = 999L
+
+        // when&then
+        val exception = assertThrows<PillBuddyCustomException> {
+            notificationService.deleteNotification(notificationId)
+        }
+        assertEquals(ErrorCode.NOTIFICATION_NOT_FOUND, exception.errorCode)
     }
 }
