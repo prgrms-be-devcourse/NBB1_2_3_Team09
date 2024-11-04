@@ -37,7 +37,7 @@ class UserService(
             updateUsername(userUpdateDto.username ?: user.username)
             updateLoginId(userUpdateDto.loginId ?: user.loginId)
             updateEmail(userUpdateDto.email ?: user.email)
-            updatePhoneNumber(userUpdateDto.phoneNumber ?: user.phoneNumber)
+            (userUpdateDto.phoneNumber ?: user.phoneNumber)?.let { updatePhoneNumber(it) }
         }
         return UserDto(user)
     }

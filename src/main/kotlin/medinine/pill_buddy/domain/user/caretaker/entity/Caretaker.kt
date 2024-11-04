@@ -21,5 +21,5 @@ class Caretaker(
     loginId: String,
     password: String,
     email: String,
-    phoneNumber: String
+    phoneNumber: String? = null
 ) : User(username, loginId, password, email, phoneNumber, Role.USER)
