@@ -1,6 +1,7 @@
 package medinine.pill_buddy.domain.notification.service
 
 import medinine.pill_buddy.domain.notification.dto.NotificationDTO
+import medinine.pill_buddy.domain.notification.dto.UserNotificationDTO
 import medinine.pill_buddy.domain.notification.entity.Notification
 import medinine.pill_buddy.domain.notification.provider.SmsProvider
 import medinine.pill_buddy.domain.notification.repository.NotificationRepository
@@ -8,6 +9,7 @@ import medinine.pill_buddy.domain.record.entity.Record
 import medinine.pill_buddy.domain.record.entity.Taken
 import medinine.pill_buddy.domain.user.caretaker.entity.CaretakerCaregiver
 import medinine.pill_buddy.domain.user.caretaker.repository.CaretakerCaregiverRepository
+import medinine.pill_buddy.domain.user.caretaker.repository.CaretakerRepository
 import medinine.pill_buddy.domain.userMedication.entity.Frequency
 import medinine.pill_buddy.domain.userMedication.entity.UserMedication
 import medinine.pill_buddy.domain.userMedication.repository.UserMedicationRepository
@@ -25,7 +27,8 @@ class NotificationService(
     private val notificationRepository: NotificationRepository,
     private val userMedicationRepository: UserMedicationRepository,
     private val caretakerCaregiverRepository: CaretakerCaregiverRepository,
-    private val smsProvider: SmsProvider
+    private val smsProvider: SmsProvider,
+    private val caretakerRepository: CaretakerRepository
 ) {
     // 주어진 사용자 약 ID로부터 약을 찾아 알림을 생성합니다.
     fun createNotifications(userMedicationId: Long): List<NotificationDTO> {
@@ -178,5 +181,18 @@ class NotificationService(
         val medicationName = notification.userMedication?.name ?: throw PillBuddyCustomException(ErrorCode.MEDICATION_NAME_NOT_FOUND)
         val userName = notification.caretaker?.username ?: throw PillBuddyCustomException(ErrorCode.USER_NAME_NOT_FOUND)
         return Pair(medicationName, userName)
+    }
+
+    // 알림을 조회합니다.
+    fun findNotification(caretakerId: Long): List<UserNotificationDTO> {
+        val caretaker = caretakerRepository.findById(caretakerId)
+            .orElseThrow { PillBuddyCustomException(ErrorCode.CARETAKER_NOT_FOUND) }
+
+        val userNotificationDTOs = notificationRepository.findByCaretaker(caretaker)
+        if (userNotificationDTOs.isEmpty()) {
+            throw PillBuddyCustomException(ErrorCode.NOTIFICATION_NOT_FOUND)
+        }
+
+        return userNotificationDTOs
     }
 }
