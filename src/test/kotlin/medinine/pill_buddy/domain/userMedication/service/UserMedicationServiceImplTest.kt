@@ -64,7 +64,8 @@ class UserMedicationServiceImplTest {
     }
 
     @Test
-    fun `register should save UserMedication and return DTO`() {
+    @DisplayName("등록 테스트")
+    fun registerTest() {
         // given
         given(caretakerRepository.findById(caretaker.id!!)).willReturn(java.util.Optional.of(caretaker))
         given(userMedicationRepository.save(any(UserMedication::class.java))).willReturn(userMedication)
@@ -79,7 +80,8 @@ class UserMedicationServiceImplTest {
     }
 
     @Test
-    fun `register should throw exception when caretaker not found`() {
+    @DisplayName("등록 예외 테스트")
+    fun registerException() {
         // given
         given(caretakerRepository.findById(caretaker.id!!)).willReturn(java.util.Optional.empty())
 
@@ -91,7 +93,8 @@ class UserMedicationServiceImplTest {
     }
 
     @Test
-    fun `retrieve should return list of UserMedicationDTO`() {
+    @DisplayName("약 정보 기록 반환")
+    fun retrieveUserMedication() {
         // given
         given(userMedicationRepository.findByCaretakerId(caretaker.id!!)).willReturn(listOf(userMedication))
 
