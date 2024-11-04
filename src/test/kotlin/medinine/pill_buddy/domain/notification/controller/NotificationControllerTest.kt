@@ -7,6 +7,7 @@ import medinine.pill_buddy.domain.notification.service.NotificationService
 import medinine.pill_buddy.domain.userMedication.entity.Frequency
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -135,7 +136,7 @@ class NotificationControllerTest(
 
         // when & then
         mvc.perform(
-            patch("$BASE_URL/$notificationId")
+            patch("$BASE_URL/$notificationId/time")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateNotificationDTO))
         )
@@ -151,5 +152,21 @@ class NotificationControllerTest(
                     "frequency": "ONCE_A_DAY"
                 }
             """))
+    }
+
+    @Test
+    @DisplayName("알림 삭제")
+    fun deleteNotifications_test() {
+        // given
+        val notificationId = 1L
+        doNothing().`when`(notificationService).deleteNotification(notificationId)
+
+        // when & then
+        mvc.perform(
+            delete("$BASE_URL/$notificationId")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isNoContent)
+            .andExpect(content().string(""))
     }
 }
