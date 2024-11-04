@@ -53,7 +53,7 @@ class NotificationControllerTest {
     private val BASE_URL = "/api/notification"
 
     @Test
-    @DisplayName("알림 생성 테스트")
+    @DisplayName("알림 생성")
     fun createNotifications_test() {
         // given
         val userMedicationId = 1L
@@ -94,7 +94,7 @@ class NotificationControllerTest {
     }
 
     @Test
-    @DisplayName("알림 조회 테스트")
+    @DisplayName("알림 조회")
     fun findNotifications_test() {
         // given
         val fixedTime = LocalDateTime.of(2024, 11, 1, 9, 0, 0)
