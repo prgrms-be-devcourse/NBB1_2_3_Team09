@@ -183,16 +183,11 @@ class NotificationService(
         return Pair(medicationName, userName)
     }
 
-    // 알림을 조회합니다.
+    // 주어진 사용자 ID로부터 알림을 조회합니다.
     fun findNotification(caretakerId: Long): List<UserNotificationDTO> {
         val caretaker = caretakerRepository.findById(caretakerId)
             .orElseThrow { PillBuddyCustomException(ErrorCode.CARETAKER_NOT_FOUND) }
 
-        val userNotificationDTOs = notificationRepository.findByCaretaker(caretaker)
-        if (userNotificationDTOs.isEmpty()) {
-            throw PillBuddyCustomException(ErrorCode.NOTIFICATION_NOT_FOUND)
-        }
-
-        return userNotificationDTOs
+        return notificationRepository.findByCaretaker(caretaker)
     }
 }
