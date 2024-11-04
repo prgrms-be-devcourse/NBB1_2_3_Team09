@@ -66,8 +66,6 @@ enum class ErrorCode(
     MESSAGE_SEND_FAILED(HttpStatus.BAD_REQUEST, "메시지 전송에 실패했습니다."),
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알람 정보를 찾을 수 없습니다."),
     PHONE_NUMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "전화번호를 찾을 수 없습니다."),
-    NOTIFICATION_TIME_NOT_FOUND(HttpStatus.NOT_FOUND, "알람 시간 정보를 찾을 수 없습니다."),
-
 
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "저장된 기록을 찾을 수 없습니다"),
     RECORD_NOT_REGISTERED(HttpStatus.CONFLICT, "기록 저장에 실패 했습니다"),
