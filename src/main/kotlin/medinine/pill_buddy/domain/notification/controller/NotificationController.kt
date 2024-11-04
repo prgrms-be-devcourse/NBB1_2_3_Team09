@@ -1,6 +1,8 @@
 package medinine.pill_buddy.domain.notification.controller
 
+import jakarta.validation.Valid
 import medinine.pill_buddy.domain.notification.dto.NotificationDTO
+import medinine.pill_buddy.domain.notification.dto.UpdateNotificationDTO
 import medinine.pill_buddy.domain.notification.dto.UserNotificationDTO
 import medinine.pill_buddy.domain.notification.service.NotificationService
 import org.springframework.http.HttpStatus
@@ -30,6 +32,12 @@ class NotificationController(
     @GetMapping("/{caretakerId}")
     fun findNotifications(@PathVariable caretakerId: Long): ResponseEntity<List<UserNotificationDTO>> {
         return ResponseEntity.ok(notificationService.findNotification(caretakerId))
+    }
+
+    @PatchMapping("/{notificationId}")
+    fun updateNotification(@PathVariable notificationId: Long,
+                           @RequestBody @Valid updateNotification: UpdateNotificationDTO): ResponseEntity<NotificationDTO> {
+        return ResponseEntity.ok(notificationService.updateNotification(notificationId, updateNotification))
     }
 }
 
