@@ -1,6 +1,5 @@
 package medinine.pill_buddy.domain.notification.service
 
-import medinine.pill_buddy.domain.notification.entity.Notification
 import medinine.pill_buddy.domain.notification.provider.SmsProvider
 import medinine.pill_buddy.domain.user.caregiver.entity.Caregiver
 import medinine.pill_buddy.domain.user.caregiver.repository.CaregiverRepository
@@ -14,12 +13,8 @@ import medinine.pill_buddy.domain.userMedication.entity.UserMedication
 import medinine.pill_buddy.domain.userMedication.repository.UserMedicationRepository
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.*
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
