@@ -23,5 +23,9 @@ data class NotificationDTO(
         fun convertToDTOs(notifications: List<Notification>): List<NotificationDTO> {
             return notifications.map { NotificationDTO(it) }
         }
+
+        fun convertToDTO(notification: Notification): NotificationDTO {
+            return NotificationDTO(notification)
+        }
     }
 }

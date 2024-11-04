@@ -1,6 +1,7 @@
 package medinine.pill_buddy.domain.notification.service
 
 import medinine.pill_buddy.domain.notification.dto.NotificationDTO
+import medinine.pill_buddy.domain.notification.dto.UpdateNotificationDTO
 import medinine.pill_buddy.domain.notification.dto.UserNotificationDTO
 import medinine.pill_buddy.domain.notification.entity.Notification
 import medinine.pill_buddy.domain.notification.provider.SmsProvider
@@ -189,5 +190,16 @@ class NotificationService(
             .orElseThrow { PillBuddyCustomException(ErrorCode.CARETAKER_NOT_FOUND) }
 
         return notificationRepository.findByCaretaker(caretaker)
+    }
+
+    // 알림 시간을 수정합니다.
+    fun updateNotification(notificationId: Long, updateNotification: UpdateNotificationDTO): NotificationDTO {
+        val notification = notificationRepository.findById(notificationId)
+            .orElseThrow { PillBuddyCustomException(ErrorCode.NOTIFICATION_NOT_FOUND) }
+
+        val notificationTime = updateNotification.notificationTime ?: throw PillBuddyCustomException(ErrorCode.NOTIFICATION_TIME_NOT_FOUND)
+        notification.changeNotificationTime(notificationTime)
+
+        return NotificationDTO.convertToDTO(notification)
     }
 }
