@@ -201,4 +201,12 @@ class NotificationService(
 
         return NotificationDTO.convertToDTO(notification)
     }
+
+    // 알림을 삭제합니다.
+    fun deleteNotification(notificationId: Long) {
+        val notification = notificationRepository.findById(notificationId)
+            .orElseThrow { PillBuddyCustomException(ErrorCode.NOTIFICATION_NOT_FOUND) }
+
+        notificationRepository.delete(notification)
+    }
 }
