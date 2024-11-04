@@ -143,8 +143,8 @@ class NotificationServiceTest(
             notificationService.sendNotifications(fixedTime)
 
             //then
-            verify(smsProvider, times(1)).sendNotification(caretaker.phoneNumber, medicationName, userName)
-            verify(smsProvider, times(1)).sendNotification(caregiver.phoneNumber, medicationName, userName)
+            verify(smsProvider, times(1)).sendNotification(caretaker.phoneNumber!!, medicationName, userName)
+            verify(smsProvider, times(1)).sendNotification(caregiver.phoneNumber!!, medicationName, userName)
         }
 
         @Test
@@ -164,7 +164,7 @@ class NotificationServiceTest(
             notificationService.sendNotifications(noNotificationsTime)
 
             // then
-            verify(smsProvider, never()).sendNotification(caretaker.phoneNumber, medicationName, userName)
+            verify(smsProvider, never()).sendNotification(caretaker.phoneNumber!!, medicationName, userName)
         }
 
         @Test
@@ -178,7 +178,7 @@ class NotificationServiceTest(
             val medicationName = userMedicationRepository.findAll().first().name
             val userName = caretaker.username
 
-            doThrow(RuntimeException("SMS 전송 실패")).whenever(smsProvider).sendNotification(caretaker.phoneNumber, medicationName, userName)
+            doThrow(RuntimeException("SMS 전송 실패")).whenever(smsProvider).sendNotification(caretaker.phoneNumber!!, medicationName, userName)
 
             // when & then
             val exception = assertThrows<PillBuddyCustomException> {

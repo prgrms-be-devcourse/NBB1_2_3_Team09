@@ -9,8 +9,6 @@ import medinine.pill_buddy.domain.user.dto.UserType
 import medinine.pill_buddy.domain.user.dto.UserType.CAREGIVER
 import medinine.pill_buddy.domain.user.dto.UserType.CARETAKER
 import medinine.pill_buddy.domain.user.oauth.dto.KakaoProfile
-import medinine.pill_buddy.global.exception.ErrorCode
-import medinine.pill_buddy.global.exception.PillBuddyCustomException
 import medinine.pill_buddy.global.jwt.JwtToken
 import medinine.pill_buddy.global.jwt.JwtTokenProvider
 import org.springframework.beans.factory.annotation.Value
