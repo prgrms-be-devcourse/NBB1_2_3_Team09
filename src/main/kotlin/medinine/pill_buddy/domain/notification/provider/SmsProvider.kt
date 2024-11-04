@@ -23,7 +23,18 @@ class SmsProvider(
         val message = Message().apply {
             from = FROM
             to = phoneNumber
-            text = "$userName 님 약 복용 시간입니다: $medicationName"
+            text = "${userName}님 약 복용 시간입니다: $medicationName"
+        }
+
+        val response = messageService.sendOne(SingleMessageSendingRequest(message))
+        log.info("메세지 전송 성공: $response")
+    }
+
+    fun sendCheckNotification(phoneNumber: String, medicationName: String, userName: String) {
+        val message = Message().apply {
+            from = FROM
+            to = phoneNumber
+            text = "${userName}님이 ${medicationName}을(를) 복용하지 않았습니다."
         }
 
         val response = messageService.sendOne(SingleMessageSendingRequest(message))
