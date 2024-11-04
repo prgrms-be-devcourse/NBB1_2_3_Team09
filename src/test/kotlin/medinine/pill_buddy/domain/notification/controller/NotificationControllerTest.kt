@@ -3,11 +3,9 @@ package medinine.pill_buddy.domain.notification.controller
 import medinine.pill_buddy.domain.notification.dto.NotificationDTO
 import medinine.pill_buddy.domain.notification.dto.UserNotificationDTO
 import medinine.pill_buddy.domain.notification.service.NotificationService
-import medinine.pill_buddy.domain.user.service.UserService
 import medinine.pill_buddy.domain.userMedication.entity.Frequency
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
