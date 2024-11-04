@@ -2,15 +2,12 @@ package medinine.pill_buddy.domain.notification.controller
 
 import medinine.pill_buddy.domain.notification.dto.NotificationDTO
 import medinine.pill_buddy.domain.notification.dto.UserNotificationDTO
-import medinine.pill_buddy.domain.notification.provider.SmsProvider
-import medinine.pill_buddy.domain.notification.repository.NotificationRepository
 import medinine.pill_buddy.domain.notification.service.NotificationService
-import medinine.pill_buddy.domain.user.caretaker.repository.CaretakerCaregiverRepository
-import medinine.pill_buddy.domain.user.caretaker.repository.CaretakerRepository
+import medinine.pill_buddy.domain.user.service.UserService
 import medinine.pill_buddy.domain.userMedication.entity.Frequency
-import medinine.pill_buddy.domain.userMedication.repository.UserMedicationRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -26,28 +23,11 @@ import java.time.LocalDateTime
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class NotificationControllerTest {
-
-    @Autowired
-    lateinit var mvc: MockMvc
-
+class NotificationControllerTest(
+    @Autowired private val mvc: MockMvc
+) {
     @MockBean
-    lateinit var notificationService: NotificationService
-
-    @MockBean
-    lateinit var notificationRepository: NotificationRepository
-
-    @MockBean
-    lateinit var userMedicationRepository: UserMedicationRepository
-
-    @MockBean
-    lateinit var caretakerCaregiverRepository: CaretakerCaregiverRepository
-
-    @MockBean
-    lateinit var smsProvider: SmsProvider
-
-    @MockBean
-    lateinit var caretakerRepository: CaretakerRepository
+    private lateinit var notificationService: NotificationService
 
     private val BASE_URL = "/api/notification"
 
