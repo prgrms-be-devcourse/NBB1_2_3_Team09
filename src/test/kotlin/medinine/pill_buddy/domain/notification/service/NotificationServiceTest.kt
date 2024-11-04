@@ -13,12 +13,8 @@ import medinine.pill_buddy.domain.userMedication.entity.UserMedication
 import medinine.pill_buddy.domain.userMedication.repository.UserMedicationRepository
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.*
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
@@ -185,6 +181,54 @@ class NotificationServiceTest(
                 notificationService.sendNotifications(fixedTime)
             }
             assertEquals(ErrorCode.MESSAGE_SEND_FAILED, exception.errorCode)
+        }
+    }
+
+    @Nested
+    @DisplayName("약 복용 확인 알림 테스트")
+    inner class CheckAndSendForMissedMedicationsTests {
+
+        @Test
+        @DisplayName("성공 - 약 복용 알림 전송")
+        fun sendForMissedMedications() {
+            // given
+            val userMedication = userMedicationRepository.findAll().first()
+            val userMedicationId = userMedication.id ?: throw IllegalStateException()
+            notificationService.createNotifications(userMedicationId)
+
+            val caretaker = caretakerRepository.findAll().first()
+            val caregiver = caregiverRepository.findAll().first()
+
+            // when
+            notificationService.checkAndSendForMissedMedications(fixedTime.plusMinutes(15))
+
+            // then
+            verify(smsProvider, times(1)).sendCheckNotification(
+                caregiver.phoneNumber,
+                userMedication.name,
+                caretaker.username
+            )
+        }
+
+        @Test
+        @DisplayName("실패 - 약 복용 알림이 전송되지 않음")
+        fun sendForMissedMedications_NoNotificationSent() {
+            // given
+            val userMedication = userMedicationRepository.findAll().first()
+            val userMedicationId = userMedication.id ?: throw IllegalStateException()
+            notificationService.createNotifications(userMedicationId)
+
+            val caretaker = caretakerRepository.findAll().first()
+            val caregiver = caregiverRepository.findAll().first()
+
+            // when
+            notificationService.checkAndSendForMissedMedications(fixedTime.minusDays(1))
+
+            // then
+            verify(smsProvider, never()).sendCheckNotification(
+                caregiver.phoneNumber,
+                userMedication.name,
+                caretaker.username)
         }
     }
 }
