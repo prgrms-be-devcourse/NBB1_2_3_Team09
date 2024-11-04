@@ -1,6 +1,6 @@
 package medinine.pill_buddy.domain.notification.repository
 
-import medinine.pill_buddy.domain.notification.dto.UserNotificationDTO
+import medinine.pill_buddy.domain.notification.dto.NotificationDTO
 import medinine.pill_buddy.domain.notification.entity.Notification
 import medinine.pill_buddy.domain.user.caretaker.entity.Caretaker
 import org.springframework.data.jpa.repository.JpaRepository
@@ -14,5 +14,5 @@ interface NotificationRepository : JpaRepository<Notification, Long> {
     fun findByNotificationTime(@Param("now") now: LocalDateTime, @Param("nowPlusOneMinute") nowPlusOneMinute: LocalDateTime): List<Notification>
 
     @Query("SELECT n FROM Notification n WHERE n.caretaker = :caretaker")
-    fun findByCaretaker(@Param("caretaker") caretaker: Caretaker): List<UserNotificationDTO>
+    fun findByCaretaker(@Param("caretaker") caretaker: Caretaker): List<NotificationDTO>
 }

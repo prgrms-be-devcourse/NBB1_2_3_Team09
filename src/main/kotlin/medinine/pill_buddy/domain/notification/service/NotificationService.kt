@@ -2,7 +2,6 @@ package medinine.pill_buddy.domain.notification.service
 
 import medinine.pill_buddy.domain.notification.dto.NotificationDTO
 import medinine.pill_buddy.domain.notification.dto.UpdateNotificationDTO
-import medinine.pill_buddy.domain.notification.dto.UserNotificationDTO
 import medinine.pill_buddy.domain.notification.entity.Notification
 import medinine.pill_buddy.domain.notification.provider.SmsProvider
 import medinine.pill_buddy.domain.notification.repository.NotificationRepository
@@ -185,7 +184,7 @@ class NotificationService(
     }
 
     // 주어진 사용자 ID로부터 알림을 조회합니다.
-    fun findNotification(caretakerId: Long): List<UserNotificationDTO> {
+    fun findNotification(caretakerId: Long): List<NotificationDTO> {
         val caretaker = caretakerRepository.findById(caretakerId)
             .orElseThrow { PillBuddyCustomException(ErrorCode.CARETAKER_NOT_FOUND) }
 

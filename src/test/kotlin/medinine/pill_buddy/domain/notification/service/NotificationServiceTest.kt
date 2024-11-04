@@ -238,7 +238,7 @@ class NotificationServiceTest(
     inner class findNotificationTests {
 
         @Test
-        @DisplayName("성공 - 알림 조회 후 UserNotificationDTO 리스트 반환")
+        @DisplayName("성공 - 알림 조회 후 NotificationDTO 리스트 반환")
         fun findNotification() {
             // given
             val userMedication = userMedicationRepository.findAll().first()
@@ -250,11 +250,11 @@ class NotificationServiceTest(
 
 
             // when
-            val userNotificationDTOs = notificationService.findNotification(caretakerId)
+            val notificationDTOs = notificationService.findNotification(caretakerId)
 
             // then
-            assertNotNull(userNotificationDTOs)
-            assertThat(userNotificationDTOs).hasSize(7)
+            assertNotNull(notificationDTOs)
+            assertThat(notificationDTOs).hasSize(7)
         }
 
         @Test

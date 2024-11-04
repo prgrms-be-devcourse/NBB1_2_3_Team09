@@ -6,17 +6,19 @@ import java.time.LocalDateTime
 
 data class NotificationDTO(
     val notificationId: Long? = null,
+    val notificationTime: LocalDateTime? = null,
+    val caretakerId: Long? = null,
+    val caretakerUsername: String? = null,
     val medicationName: String? = null,
     val frequency: Frequency? = null,
-    val notificationTime: LocalDateTime? = null,
-    val caretakerId: Long? = null
 ) {
     constructor(notification: Notification) : this(
         notificationId = notification.id,
+        notificationTime = notification.notificationTime,
+        caretakerId = notification.caretaker?.id,
+        caretakerUsername = notification.caretaker?.username,
         medicationName = notification.userMedication?.name,
         frequency = notification.userMedication?.frequency,
-        notificationTime = notification.notificationTime,
-        caretakerId = notification.caretaker?.id
     )
 
     companion object {

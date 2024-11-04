@@ -1,7 +1,6 @@
 package medinine.pill_buddy.domain.notification.controller
 
 import medinine.pill_buddy.domain.notification.dto.NotificationDTO
-import medinine.pill_buddy.domain.notification.dto.UserNotificationDTO
 import medinine.pill_buddy.domain.notification.service.NotificationService
 import medinine.pill_buddy.domain.userMedication.entity.Frequency
 import org.junit.jupiter.api.DisplayName
@@ -35,16 +34,17 @@ class NotificationControllerTest(
         // given
         val userMedicationId = 1L
         val fixedTime = LocalDateTime.of(2024, 11, 1, 9, 0, 0)
-        val mockNotificationDTO = NotificationDTO(
+        val notificationDTO = NotificationDTO(
             notificationId = 1L,
-            medicationName = "Medication A",
-            frequency = Frequency.ONCE_A_DAY,
             notificationTime = fixedTime,
-            caretakerId = 1L
-        )
+            caretakerId = 1L,
+            caretakerUsername = "사용자",
+            medicationName = "Medication A",
+            frequency = Frequency.ONCE_A_DAY
+            )
 
         `when`(notificationService.createNotifications(userMedicationId))
-            .thenReturn(listOf(mockNotificationDTO))
+            .thenReturn(listOf(notificationDTO))
 
         // when & then
         mvc.perform(
@@ -59,10 +59,11 @@ class NotificationControllerTest(
             [
                 {
                     "notificationId": 1,
-                    "medicationName": "Medication A",
-                    "frequency": "ONCE_A_DAY",
                     "notificationTime": "2024-11-01T09:00:00",
-                    "caretakerId": 1
+                    "caretakerId": 1,
+                    "caretakerUsername": "사용자",
+                    "medicationName": "Medication A",
+                    "frequency": "ONCE_A_DAY"
                 }
             ]
             """
@@ -76,7 +77,7 @@ class NotificationControllerTest(
         // given
         val fixedTime = LocalDateTime.of(2024, 11, 1, 9, 0, 0)
         val caretakerId = 1L
-        val userNotificationDTO = UserNotificationDTO(
+        val notificationDTO = NotificationDTO(
             notificationId = 1L,
             notificationTime = fixedTime,
             caretakerId = caretakerId,
@@ -86,7 +87,7 @@ class NotificationControllerTest(
         )
 
         `when`(notificationService.findNotification(caretakerId))
-            .thenReturn(listOf(userNotificationDTO))
+            .thenReturn(listOf(notificationDTO))
 
         // when & then
         mvc.perform(
