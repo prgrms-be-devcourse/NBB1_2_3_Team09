@@ -32,7 +32,7 @@ class UserMedicationServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    //@Cacheable(cacheNames = ["getRetrieve"], key = "'caretakerId:' + #caretakerId", cacheManager = "redisCacheManager")
+    @Cacheable(cacheNames = ["getRetrieve"], key = "'caretakerId:' + #caretakerId", cacheManager = "redisCacheManager")
     override fun retrieve(caretakerId: Long): List<UserMedicationDTO> {
         val medications = userMedicationRepository.findByCaretakerId(caretakerId)
         log.info("Retrieved medications: {}", medications)
