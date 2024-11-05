@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>알림 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #fffefd, #fafafa);
+            color: #333;
+            font-family: 'Noto Sans KR', sans-serif; /* 변경된 글씨체 */
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Noto Sans KR', sans-serif; /* 변경된 글씨체 */
+            color: #ff6f61;
+            font-size: 2.5rem; /* 글씨 크기 증가 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* 텍스트 그림자 */
+            padding: 10px; /* 패딩 추가 */
+            border-bottom: 2px solid #ff6f61; /* 하단 테두리 추가 */
+            display: inline-block; /* 중앙 정렬을 위한 인라인 블록 */
+            background-color: rgba(255, 255, 255, 0.8); /* 배경색 추가 */
+            border-radius: 10px; /* 테두리 둥글게 */
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table thead {
+            background-color: #ff6f61;
+            color: white;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .btn {
+            border-radius: 25px;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>알림 목록</h1>
+    <div th:if="${#lists.isEmpty(notifications)}" class="text-center">
+        <p>알림이 없습니다.</p>
+    </div>
+    <table class="table table-striped table-hover" th:if="${!#lists.isEmpty(notifications)}">
+        <thead>
+        <tr>
+            <th><i class="fas fa-pills"></i> 약 이름</th>
+            <th><i class="fas fa-user"></i> 사용자 이름</th>
+            <th><i class="fas fa-clock"></i> 알림 시간</th>
+            <th><i class="fas fa-cogs"></i> 작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notification : ${notifications}">
+            <td th:text="${notification.medicationName}"></td>
+            <td th:text="${notification.caretakerUsername}"></td>
+            <td th:text="${#temporals.format(notification.notificationTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <a th:href="@{/notifications/update/{notificationId}(notificationId=${notification.notificationId})}" class="btn btn-warning"><i class="fas fa-edit"></i> 수정</a>
+                <a th:href="@{/notifications/delete/{notificationId}(notificationId=${notification.notificationId})}" class="btn btn-danger"><i class="fas fa-trash"></i> 삭제</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="text-center mt-4">
+        <a th:href="@{/notifications/create/{caretakerId}(caretakerId=${notifications[0].caretakerId})}" class="btn btn-primary" th:if="${!#lists.isEmpty(notifications)}"><i class="fas fa-plus"></i> 알림 추가</a>
+        <a th:href="@{/notifications/create/{caretakerId}(caretakerId=${caretakerId})}" class="btn btn-primary" th:if="${#lists.isEmpty(notifications)}"><i class="fas fa-plus"></i> 알림 추가</a>
+    </div>
+</div>
+</body>
+</html>

@@ -9,6 +9,7 @@ data class NotificationDTO(
     val notificationTime: LocalDateTime? = null,
     val caretakerId: Long? = null,
     val caretakerUsername: String? = null,
+    val medicationId: Long? = null,
     val medicationName: String? = null,
     val frequency: Frequency? = null,
 ) {
@@ -17,6 +18,7 @@ data class NotificationDTO(
         notificationTime = notification.notificationTime,
         caretakerId = notification.caretaker?.id,
         caretakerUsername = notification.caretaker?.username,
+        medicationId = notification.userMedication?.id,
         medicationName = notification.userMedication?.name,
         frequency = notification.userMedication?.frequency,
     )

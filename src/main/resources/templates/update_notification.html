@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>알림 수정</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #fffefd, #fafafa);
+            color: #333;
+            font-family: 'Noto Sans KR', sans-serif; /* 변경된 글씨체 */
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ff6f61;
+            font-size: 2.5rem; /* 글씨 크기 증가 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* 텍스트 그림자 */
+            padding: 10px; /* 패딩 추가 */
+            border-bottom: 2px solid #ff6f61; /* 하단 테두리 추가 */
+            display: inline-block; /* 중앙 정렬을 위한 인라인 블록 */
+            background-color: rgba(255, 255, 255, 0.8); /* 배경색 추가 */
+            border-radius: 10px; /* 테두리 둥글게 */
+        }
+        .btn {
+            border-radius: 25px;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>알림 수정</h1>
+    <form th:action="@{/notifications/update/{notificationId}(notificationId=${notificationId})}" method="post">
+        <div class="form-group">
+            <label for="notificationTime">알림 시간</label>
+            <input type="datetime-local" id="notificationTime" name="notificationTime" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">수정하기</button>
+        <a th:href="@{/notifications}" class="btn btn-secondary">취소</a>
+    </form>
+</div>
+</body>
+</html>

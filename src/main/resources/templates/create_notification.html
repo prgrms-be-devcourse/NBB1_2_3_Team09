@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>알림 추가</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #f6f5f8, #ffffff);
+            color: #333;
+            font-family: 'Noto Sans KR', sans-serif; /* 변경된 글씨체 */
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 50px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Noto Sans KR', sans-serif; /* 변경된 글씨체 */
+            color: #ff6f61; /* 제목 색상 */
+            font-size: 2.5rem; /* 글씨 크기 */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* 텍스트 그림자 */
+            padding: 10px; /* 패딩 추가 */
+            border-bottom: 2px solid #ff6f61; /* 하단 테두리 추가 */
+            background-color: rgba(255, 255, 255, 0.8); /* 배경색 추가 */
+            border-radius: 10px; /* 테두리 둥글게 */
+        }
+        .form-control {
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333; /* 입력 텍스트 색상 */
+            transition: background 0.3s ease;
+        }
+        .form-control:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: #ff6f61; /* 포커스 시 테두리 색상 */
+            box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+        }
+        .btn {
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: scale(1.05);
+        }
+        .input-group-text {
+            background-color: #ff6f61;
+            color: white;
+            border-radius: 25px 0 0 25px; /* 둥근 모서리 */
+        }
+        /* 레이블을 굵게 표시하기 위한 스타일 */
+        .form-label {
+            font-weight: bold; /* 글씨를 굵게 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>알림 추가</h1>
+    <input type="hidden" name="caretakerId" th:value="${caretakerId}"/>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>약 이름</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="userMedication : ${userMedications}">
+            <td th:text="${userMedication.name}"></td>
+            <td>
+                <form th:action="@{/notifications/create}" method="post">
+                    <input type="hidden" name="caretakerId" th:value="${caretakerId}"/>
+                    <input type="hidden" name="userMedicationId" th:value="${userMedication.id}"/>
+                    <button type="submit" class="btn btn-success">알림 추가</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="text-center mt-4">
+        <a href="/notifications" class="btn btn-secondary">취소</a>
+    </div>
+</div>
+</body>
+</html>
