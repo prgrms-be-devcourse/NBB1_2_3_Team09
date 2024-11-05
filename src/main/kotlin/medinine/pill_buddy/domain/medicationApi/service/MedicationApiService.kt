@@ -52,16 +52,6 @@ class MedicationApiService(
             val newMedicationList = createDto(MedicationForm(itemName = keyword)).map { modelMapper.map(it,Medication::class.java) }
             val oldMedicationList = medicationApiRepository.findAllByItemName(keyword)
             sizeSynchronize(newMedicationList, oldMedicationList)
-            val newMedicationMap = newMedicationList.associateBy { it.itemSeq }
-            for (oldMedication in oldMedicationList) {
-                val newMedication = newMedicationMap[oldMedication.itemSeq]
-                newMedication?.let {
-                    oldMedication.apply {
-                        dirtyChecking(it)
-                    }
-                }
-            }
-
         }
     }
 
@@ -69,28 +59,22 @@ class MedicationApiService(
         newMedicationList: List<Medication>,
         oldMedicationList: List<Medication>
     ) {
-        if (newMedicationList.size > oldMedicationList.size) {
-            val newMedications = newMedicationList.toMutableList()
-            val oldMedications = oldMedicationList.toMutableList()
-            val newMedicationMap = newMedicationList.associateBy { it.itemSeq }
-            for (oldMedication in oldMedications) {
-                newMedications.remove(newMedicationMap[oldMedication.itemSeq])
+        val newMedications = newMedicationList.toMutableList()
+        val oldMedications = oldMedicationList.toMutableList()
+        val oldDeleteMedications = mutableListOf<Medication>()
+        val newMedicationMap = newMedicationList.associateBy { it.itemSeq }
+        for (oldMedication in oldMedications) {
+            val newMedication = newMedicationMap[oldMedication.itemSeq]
+
+            if (newMedication == null) {
+                oldDeleteMedications.add(oldMedication)
+                continue
             }
-            medicationApiRepository.saveAll(newMedications)
-
-
-        }else if(newMedicationList.size < oldMedicationList.size){
-
-            val newMedications = newMedicationList.toMutableList()
-            val oldMedications = oldMedicationList.toMutableList()
-            val oldMedicationMap = oldMedicationList.associateBy { it.itemSeq }
-            for (newMedication in newMedications) {
-                oldMedications.remove(oldMedicationMap[newMedication.itemSeq])
-            }
-
-            medicationApiRepository.deleteAll(oldMedications)
-
+            oldMedication.dirtyChecking(newMedication)
+            newMedications.remove(newMedication)
         }
+        medicationApiRepository.saveAll(newMedications)
+        medicationApiRepository.deleteAll(oldDeleteMedications)
     }
 
     fun createDto(medicationForm: MedicationForm): List<MedicationDTO> {
