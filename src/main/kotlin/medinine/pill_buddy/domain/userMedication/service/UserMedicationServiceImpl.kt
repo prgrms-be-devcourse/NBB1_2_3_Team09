@@ -8,6 +8,7 @@ import medinine.pill_buddy.domain.userMedication.repository.UserMedicationReposi
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
 import medinine.pill_buddy.log
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -31,6 +32,7 @@ class UserMedicationServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    //@Cacheable(cacheNames = ["getRetrieve"], key = "'caretakerId:' + #caretakerId", cacheManager = "redisCacheManager")
     override fun retrieve(caretakerId: Long): List<UserMedicationDTO> {
         val medications = userMedicationRepository.findByCaretakerId(caretakerId)
         log.info("Retrieved medications: {}", medications)
@@ -59,6 +61,8 @@ class UserMedicationServiceImpl(
         return UserMedicationDTO.entityToDTO(userMedication)
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = ["getRecordsByDate"], key = "'caretakerId:' + #caretakerId + ':date:' + #date", cacheManager = "redisCacheManager")
     override fun getUserMedicationRecordsByDate(caretakerId: Long, date: LocalDateTime): List<RecordDTO> {
         val userMedications = userMedicationRepository.findByCaretakerId(caretakerId)
         val recordDTOList = mutableListOf<RecordDTO>()

@@ -13,6 +13,7 @@ import medinine.pill_buddy.global.exception.PillBuddyCustomException
 import medinine.pill_buddy.log
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -115,6 +116,7 @@ class MedicationApiService(
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = ["medicationCache"], key = "'itemName:' + #itemName + ':pageNo:' + #pageNo + ':numofRows:' + #numOfRows", cacheManager = "redisCacheManager")
     fun findPageByName(itemName: String, pageNo: Int, numOfRows: Int): Page<MedicationDTO> {
         val pageRequest = PageRequest.of(pageNo, numOfRows, Sort.by(Sort.Direction.ASC, "itemSeq"))
         val allByItemNameLike = medicationApiRepository.findPageByItemNameLike(itemName, pageRequest)
