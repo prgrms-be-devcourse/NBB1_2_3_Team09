@@ -37,7 +37,7 @@ object KakaoProperty {
         KAKAO_CARETAKER_REDIRECT_URI = redirectUri
     }
 
-    @Value("\${oauth.kakao.authorization-grant-type}")
+    @Value("\${oauth.authorization-grant-type}")
     fun setAuthorizationGrantType(authorizationGrantType: String) {
         KAKAO_AUTHORIZATION_GRANT_TYPE = authorizationGrantType
     }
