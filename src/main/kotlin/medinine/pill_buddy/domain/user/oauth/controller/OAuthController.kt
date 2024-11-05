@@ -57,7 +57,7 @@ class OAuthController(
         @RequestParam code: String,
         @PathVariable userType: String,
         @PathVariable registrationId: String
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<JwtToken> {
         val jwtToken: JwtToken = socialLoginService.login(code, UserType.from(userType), registrationId)
 
         val redirectUrl = "/afterLogin.html?token=${jwtToken.accessToken}"

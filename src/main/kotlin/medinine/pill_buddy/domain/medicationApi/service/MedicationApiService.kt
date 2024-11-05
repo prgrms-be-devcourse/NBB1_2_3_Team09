@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import medinine.pill_buddy.domain.medicationApi.dto.MedicationDTO
 import medinine.pill_buddy.domain.medicationApi.dto.MedicationForm
+import medinine.pill_buddy.domain.medicationApi.dto.MyPageImpl
 import medinine.pill_buddy.domain.medicationApi.entity.Medication
 import medinine.pill_buddy.domain.medicationApi.repository.MedicationApiRepository
 import medinine.pill_buddy.global.exception.ErrorCode
@@ -117,11 +118,11 @@ class MedicationApiService(
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = ["medicationCache"], key = "'itemName:' + #itemName + ':pageNo:' + #pageNo + ':numofRows:' + #numOfRows", cacheManager = "redisCacheManager")
-    fun findPageByName(itemName: String, pageNo: Int, numOfRows: Int): Page<MedicationDTO> {
+    fun findPageByName(itemName: String, pageNo: Int, numOfRows: Int): MyPageImpl<MedicationDTO> {
         val pageRequest = PageRequest.of(pageNo, numOfRows, Sort.by(Sort.Direction.ASC, "itemSeq"))
         val allByItemNameLike = medicationApiRepository.findPageByItemNameLike(itemName, pageRequest)
         if(pageNo> allByItemNameLike.totalPages) throw PillBuddyCustomException(ErrorCode.OUT_OF_PAGE)
-        return allByItemNameLike.map { modelMapper.map(it,MedicationDTO::class.java) }
+        return MyPageImpl(allByItemNameLike.map { modelMapper.map(it,MedicationDTO::class.java) })
     }
 
     @Transactional
