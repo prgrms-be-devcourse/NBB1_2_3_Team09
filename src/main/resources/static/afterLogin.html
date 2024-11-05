@@ -1,10 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>사용자 기능 페이지</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        // URL 파라미터에서 JWT 토큰 추출
+        function getJwtTokenFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('token');
+        }
+
+        // JWT 토큰을 로컬 스토리지에 저장
+        function storeJwtToken() {
+            const jwtToken = getJwtTokenFromUrl();
+            if (jwtToken) {
+                localStorage.setItem('jwtToken', jwtToken);
+            }
+        }
+
+        // 약 등록, 보호자 등록 요청 시 Authorization 헤더에 JWT 토큰 추가
+        function sendUserActionRequest(endpoint) {
+            const jwtToken = localStorage.getItem('jwtToken');
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + jwtToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ /* 등록 데이터 */ })
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('에러:', error));
+        }
+
+        window.onload = function() {
+            storeJwtToken();
+        };
+    </script>
 </head>
 <body>
-
+<h1>사용자 기능 페이지</h1>
+<button onclick="sendUserActionRequest('/api/register-medicine')" class="text-center mb-4">약 등록</button>
+<button onclick="sendUserActionRequest('/api/register-caregiver')" class="text-center mb-4">보호자 등록</button>
 </body>
 </html>

@@ -25,28 +25,44 @@ class OAuthController(
     fun getConnectionByKakao(@RequestParam userType: UserType): ResponseEntity<String> {
         val location: String = socialLoginService.getConnectionUrl(userType, "kakao")
 
+//        return ResponseEntity.ok(location)
         return ResponseEntity.status(HttpStatus.FOUND)
             .location(URI.create(location))
             .build()
+
     }
 
     @GetMapping("/connection/naver")
     fun getConnectionByNaver(@RequestParam userType: UserType): ResponseEntity<String> {
         val location: String = socialLoginService.getConnectionUrl(userType, "naver")
 
+//        return ResponseEntity.ok(location)
         return ResponseEntity.status(HttpStatus.FOUND)
             .location(URI.create(location))
             .build()
     }
 
+//    @GetMapping("/login/{registrationId}/{userType}")
+//    fun login(
+//        @RequestParam code: String,
+//        @PathVariable userType: String,
+//        @PathVariable registrationId: String
+//    ): ResponseEntity<JwtToken> {
+//        val jwtToken: JwtToken = socialLoginService.login(code, UserType.from(userType), registrationId)
+//
+//        return ResponseEntity.ok(jwtToken)
+//    }
     @GetMapping("/login/{registrationId}/{userType}")
     fun login(
         @RequestParam code: String,
         @PathVariable userType: String,
         @PathVariable registrationId: String
-    ): ResponseEntity<JwtToken> {
+    ): ResponseEntity<Void> {
         val jwtToken: JwtToken = socialLoginService.login(code, UserType.from(userType), registrationId)
 
-        return ResponseEntity.ok(jwtToken)
+        val redirectUrl = "/afterLogin.html?token=${jwtToken.accessToken}"
+        return ResponseEntity.status(HttpStatus.FOUND)
+            .location(URI.create(redirectUrl))
+            .build()
     }
 }
