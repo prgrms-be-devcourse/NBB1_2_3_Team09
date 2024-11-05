@@ -149,7 +149,7 @@ class MedicationApiService(
 
     private fun createUrl(medicationForm: MedicationForm, pageNo: Int): URI {
         log.info("약 이름 : ${medicationForm.itemName}}")
-        val encodedItemName = stringEncoding(medicationForm.itemName)
+        val encodedItemName = stringEncoding(medicationForm.itemName?:throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE))
         var url =
             "$callbackUrl?serviceKey=$serviceKey&type=$dataType&itemName=$encodedItemName&pageNo=$pageNo&numOfRows=$numOfRows"
         if (medicationForm.entpName != null) {
