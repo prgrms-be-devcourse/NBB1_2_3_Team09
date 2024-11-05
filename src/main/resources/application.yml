@@ -9,7 +9,7 @@ spring:
       use_sql_comments: true
       jdbc:
         batch_size: 100
-    hibernate.ddl-auto: update
+    hibernate.ddl-auto: create
 
   data:
     redis:
@@ -28,15 +28,17 @@ jwt:
     refresh-expiration-time: 86400000  # 24시간
 
 oauth:
+  oauth2-password: ${OAUTH2_PASSWORD}
+  authorization-grant-type: ${AUTHORIZATION_GRANT_TYPE}
   kakao:
-    kakao-password: ${KAKAO_PASSWORD}
     client-id: ${KAKAO_CLIENT_ID}
     caregiver-redirect-uri: ${KAKAO_CAREGIVER_REDIRECT_URI}
     caretaker-redirect-uri: ${KAKAO_CARETAKER_REDIRECT_URI}
-    authorization-grant-type: ${KAKAO_AUTHORIZATION_GRANT_TYPE}
-    authorization-uri: ${KAKAO_AUTHORIZATION_URI}
-    token-uri: ${KAKAO_TOKEN_URI}
-    user-info-uri: ${KAKAO_USER_INFO_URI}
+  naver:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+    caregiver-redirect-uri: ${NAVER_CAREGIVER_REDIRECT_URI}
+    caretaker-redirect-uri: ${NAVER_CARETAKER_REDIRECT_URI}
 
 file:
   path: test-upload

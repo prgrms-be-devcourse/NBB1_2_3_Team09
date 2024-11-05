@@ -1,10 +1,10 @@
 package medinine.pill_buddy.domain.user.oauth.service
 
 import medinine.pill_buddy.domain.user.dto.UserType
-import medinine.pill_buddy.global.jwt.JwtToken
+import medinine.pill_buddy.domain.user.oauth.dto.OAuthProfile
 
+interface OAuthClient {
 
-interface OAuthService {
     fun getConnectionUrl(userType: UserType): String
-    fun login(code: String, userType: UserType): JwtToken
+    fun getUserInfo(code: String): OAuthProfile
 }

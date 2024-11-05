@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
     kotlin("plugin.jpa") version "1.9.25"
 }
+val springCloudVersion by extra("2023.0.3")
 
 group = "medinine"
 version = "0.0.1-SNAPSHOT"
@@ -40,8 +41,8 @@ dependencies {
     // OAuth2
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
 
-    // Webflux
-    implementation ("org.springframework.boot:spring-boot-starter-webflux")
+    // open feign
+    implementation ("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     //nurigo API
     implementation("net.nurigo:sdk:4.2.7")
@@ -63,6 +64,11 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 
+}
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+    }
 }
 
 kotlin {
