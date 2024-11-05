@@ -1,4 +1,4 @@
-package medinine.pill_buddy.global.oauth
+package medinine.pill_buddy.domain.user.oauth.constant
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

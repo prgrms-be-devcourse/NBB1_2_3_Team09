@@ -5,10 +5,10 @@ import medinine.pill_buddy.domain.user.dto.UserType.*
 import medinine.pill_buddy.domain.user.oauth.dto.KakaoUserResponse
 import medinine.pill_buddy.domain.user.oauth.dto.OAuthProfile
 import medinine.pill_buddy.domain.user.oauth.service.OAuthClient
-import medinine.pill_buddy.global.oauth.KakaoProperty.KAKAO_AUTHORIZATION_GRANT_TYPE
-import medinine.pill_buddy.global.oauth.KakaoProperty.KAKAO_CAREGIVER_REDIRECT_URI
-import medinine.pill_buddy.global.oauth.KakaoProperty.KAKAO_CARETAKER_REDIRECT_URI
-import medinine.pill_buddy.global.oauth.KakaoProperty.KAKAO_CLIENT_ID
+import medinine.pill_buddy.domain.user.oauth.constant.KakaoProperty.KAKAO_AUTHORIZATION_GRANT_TYPE
+import medinine.pill_buddy.domain.user.oauth.constant.KakaoProperty.KAKAO_CAREGIVER_REDIRECT_URI
+import medinine.pill_buddy.domain.user.oauth.constant.KakaoProperty.KAKAO_CARETAKER_REDIRECT_URI
+import medinine.pill_buddy.domain.user.oauth.constant.KakaoProperty.KAKAO_CLIENT_ID
 import org.springframework.stereotype.Component
 
 @Component

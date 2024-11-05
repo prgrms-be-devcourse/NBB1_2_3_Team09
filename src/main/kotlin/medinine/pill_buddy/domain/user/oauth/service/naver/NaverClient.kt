@@ -6,11 +6,11 @@ import medinine.pill_buddy.domain.user.dto.UserType.CARETAKER
 import medinine.pill_buddy.domain.user.oauth.dto.NaverUserResponse
 import medinine.pill_buddy.domain.user.oauth.dto.OAuthProfile
 import medinine.pill_buddy.domain.user.oauth.service.OAuthClient
-import medinine.pill_buddy.global.oauth.NaverProperty.NAVER_AUTHORIZATION_GRANT_TYPE
-import medinine.pill_buddy.global.oauth.NaverProperty.NAVER_CAREGIVER_REDIRECT_URI
-import medinine.pill_buddy.global.oauth.NaverProperty.NAVER_CARETAKER_REDIRECT_URI
-import medinine.pill_buddy.global.oauth.NaverProperty.NAVER_CLIENT_ID
-import medinine.pill_buddy.global.oauth.NaverProperty.NAVER_CLIENT_SECRET
+import medinine.pill_buddy.domain.user.oauth.constant.NaverProperty.NAVER_AUTHORIZATION_GRANT_TYPE
+import medinine.pill_buddy.domain.user.oauth.constant.NaverProperty.NAVER_CAREGIVER_REDIRECT_URI
+import medinine.pill_buddy.domain.user.oauth.constant.NaverProperty.NAVER_CARETAKER_REDIRECT_URI
+import medinine.pill_buddy.domain.user.oauth.constant.NaverProperty.NAVER_CLIENT_ID
+import medinine.pill_buddy.domain.user.oauth.constant.NaverProperty.NAVER_CLIENT_SECRET
 import org.springframework.stereotype.Component
 
 @Component
