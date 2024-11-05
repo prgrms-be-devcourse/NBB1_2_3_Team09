@@ -22,7 +22,6 @@ repositories {
 dependencies {
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -35,7 +34,9 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
     // Redis
-    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.springframework.boot:spring-boot-starter-data-redis") // redis 의존성이 2개 선언되어 있어 하나 삭제
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin") // json 모듈 의존성 추가
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310") // 직렬화 오류 해결 의존성 추가
 
     // OAuth2
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
