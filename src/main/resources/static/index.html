@@ -1,9 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="KR">
 <head>
     <meta charset="UTF-8">
     <title>로그인 페이지</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
+<body class="bg-light">
+<div class="container my-5">
+    <h1 class="text-center mb-4">로그인 페이지</h1>
 
+    <form action="/api/users/login" method="post" class="border p-4 bg-white shadow-sm rounded mb-4">
+        <h2 class="h4 mb-3">일반 로그인</h2>
+        <div class="mb-3">
+            <label for="username" class="form-label">아이디</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="아이디를 입력하세요" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="비밀번호를 입력하세요" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">로그인</button>
+    </form>
+
+    <form action="/api/users/oauth/connection/kakao" method="get" class="text-center mb-4">
+        <h2 class="h5 mb-3">소셜 로그인</h2>
+        <select name="userType" class="form-select mb-3" required>
+            <option value="CARETAKER">Caretaker</option>
+            <option value="CAREGIVER">Caregiver</option>
+        </select>
+        <button type="submit" class="btn btn-warning w-100 mb-2">카카오 로그인</button>
+    </form>
+
+
+    <form action="/api/users/oauth/connection/naver" method="get" class="text-center mb-4">
+        <select name="userType" class="form-select mb-3" required>
+            <option value="CARETAKER">Caretaker</option>
+            <option value="CAREGIVER">Caregiver</option>
+        </select>
+        <button type="submit" class="btn btn-success w-100">네이버 로그인</button>
+    </form>
+
+
+    <div class="text-center">
+        <a href="/api/users/join" class="btn btn-outline-secondary w-100">회원가입</a>
+    </div>
+</div>
+
+</body>
 </html>
