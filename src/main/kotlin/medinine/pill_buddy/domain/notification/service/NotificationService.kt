@@ -16,6 +16,7 @@ import medinine.pill_buddy.domain.userMedication.repository.UserMedicationReposi
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
 import medinine.pill_buddy.log
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -184,6 +185,7 @@ class NotificationService(
     }
 
     // 주어진 사용자 ID로부터 알림을 조회합니다.
+    @Cacheable(cacheNames = ["getNotification"], key = "'caretakerId:' + #caretakerId", cacheManager = "redisCacheManager")
     fun findNotification(caretakerId: Long): List<NotificationDTO> {
         val caretaker = caretakerRepository.findById(caretakerId)
             .orElseThrow { PillBuddyCustomException(ErrorCode.CARETAKER_NOT_FOUND) }
