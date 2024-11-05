@@ -9,6 +9,7 @@ import medinine.pill_buddy.domain.userMedication.dto.UserMedicationDTO
 import medinine.pill_buddy.domain.userMedication.repository.UserMedicationRepository
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,6 +22,7 @@ class CaregiverService(
 ) {
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = ["getCaretakerMedicationsInfo"], key = "'caregiverId:' + #caregiverId + ':caretakerId:' + #caretakerId", cacheManager = "redisCacheManager")
     fun getCaretakerMedications(caregiverId: Long, caretakerId: Long): List<UserMedicationDTO> {
         caretakerCaregiverRepository.findByCaretakerIdAndCaregiverId(caretakerId, caregiverId)
             ?: throw PillBuddyCustomException(ErrorCode.CAREGIVER_CARETAKER_NOT_MATCHED)
