@@ -1,5 +1,7 @@
 package medinine.pill_buddy.domain.user.caretaker.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import lombok.RequiredArgsConstructor
 import medinine.pill_buddy.domain.record.dto.RecordDTO
 import medinine.pill_buddy.domain.record.service.RecordService
@@ -15,12 +17,14 @@ import java.time.LocalDate
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "사용자 기능", description = "사용자는 보호자를 등록,삭제할 수 있으며, 복용 기록여부를 등록,조회할 수 있다.")
 @RequestMapping("/api/caretakers")
 class CaretakerController(
     private val caretakerService: CaretakerService,
     private val userMedicationService: UserMedicationService,
     private val recordService: RecordService
 ) {
+    @Operation(description = "사용자는 보호자를 등록할 수 있다.")
     @PostMapping("/{caretakerId}/caregivers/{caregiverId}")
     fun addCaregiver(
         @PathVariable caretakerId: Long,
@@ -30,6 +34,7 @@ class CaretakerController(
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCaretakerCaregiverDTO)
     }
 
+    @Operation(description = "사용자는 보호자를 삭제할 수 있다.")
     @DeleteMapping("/{caretakerId}/caregivers/{caregiverId}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteCaregiver(
         @PathVariable caretakerId: Long, @PathVariable caregiverId: Long
@@ -38,6 +43,7 @@ class CaretakerController(
         return ResponseEntity.ok(mapOf("Process" to "Success"))
     }
 
+    @Operation(description = "사용자는 지정일의 약 복용 기록을 조회할 수 있다.")
     @GetMapping("/{caretakerId}/user-medications/records")
     fun getRecordsByDate(
         @PathVariable caretakerId: Long,
@@ -47,12 +53,14 @@ class CaretakerController(
         return ResponseEntity.ok(records)
     }
 
+    @Operation(description = "사용자는 새로운 약의 복용 기록을 등록할 수 있다.")
     @PostMapping("/user-medications/{userMedicationId}/records")
     fun addRecord(@PathVariable userMedicationId: Long): ResponseEntity<RecordDTO> {
         val savedRecordDTO = recordService.registerRecord(userMedicationId)
         return ResponseEntity.ok(savedRecordDTO)
     }
 
+    @Operation(description = "사용자는 약을 복용했다 표시할 수 있다.")
     @PutMapping("/user-medications/{userMedicationId}/records/{recordId}")
     fun updateRecord(
         @PathVariable userMedicationId: Long,
