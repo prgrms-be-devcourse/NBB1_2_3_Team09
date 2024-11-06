@@ -85,6 +85,10 @@
             font-size: 0.9rem;
             color: #666;
         }
+        .font-weight-bold {
+            font-weight: bold; /* 글씨체를 굵게 만드는 클래스 */
+            color: #555; /* 약간 연한 색상으로 변경 */
+        }
     </style>
 </head>
 <body>
@@ -104,7 +108,7 @@
         </thead>
         <tbody>
         <tr th:each="notification : ${notifications}">
-            <td th:text="${notification.medicationName}"></td>
+            <td class="font-weight-bold" th:text="${notification.medicationName}"></td> <!-- 약 이름을 굵게 표시 -->
             <td th:text="${notification.caretakerUsername}"></td>
             <td th:text="${#temporals.format(notification.notificationTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td>

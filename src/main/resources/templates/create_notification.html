@@ -94,6 +94,10 @@
         .footer p {
             margin: 0;
         }
+        .font-weight-bold {
+            font-weight: bold; /* 글씨체를 굵게 만드는 클래스 */
+            color: #555; /* 약간 연한 색상으로 변경 */
+        }
     </style>
 </head>
 <body>
@@ -105,12 +109,18 @@
         <thead>
         <tr>
             <th><i class="fas fa-pills"></i> 약 이름</th>
+            <th><i class="fas fa-calendar-alt"></i> 시작 날짜</th>
+            <th><i class="fas fa-calendar-alt"></i> 종료 날짜</th>
+            <th><i class="fas fa-clock"></i> 복용 빈도수</th> <!-- 복용 빈도수 열 추가 -->
             <th><i class="fas fa-cogs"></i> 작업</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="userMedication : ${userMedications}">
-            <td th:text="${userMedication.name}"></td>
+            <td class="font-weight-bold" th:text="${userMedication.name}"></td> <!-- 약 이름을 굵게 표시 -->
+            <td th:text="${userMedication.startDate}"></td> <!-- 포맷 없이 그대로 출력 -->
+            <td th:text="${userMedication.endDate}"></td> <!-- 포맷 없이 그대로 출력 -->
+            <td th:text="${userMedication.frequency}"></td> <!-- 복용 빈도수 출력 -->
             <td>
                 <form th:action="@{/notifications/create}" method="post">
                     <input type="hidden" name="caretakerId" th:value="${caretakerId}"/>
