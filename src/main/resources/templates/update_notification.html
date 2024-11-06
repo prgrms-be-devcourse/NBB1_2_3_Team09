@@ -7,40 +7,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(to right, #fffefd, #fafafa);
+            background: linear-gradient(to right, #f0f4f8, #f8f8f8);
             color: #333;
-            font-family: 'Noto Sans KR', sans-serif; /* 변경된 글씨체 */
+            font-family: 'Noto Sans KR', sans-serif;
         }
         .container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
             margin-top: 50px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.02); /* 마우스 오버 시 확대 효과 */
         }
         h1 {
             text-align: center;
             margin-bottom: 30px;
             color: #ff6f61;
-            font-size: 2.5rem; /* 글씨 크기 증가 */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* 텍스트 그림자 */
-            padding: 10px; /* 패딩 추가 */
-            border-bottom: 2px solid #ff6f61; /* 하단 테두리 추가 */
-            display: inline-block; /* 중앙 정렬을 위한 인라인 블록 */
-            background-color: rgba(255, 255, 255, 0.8); /* 배경색 추가 */
-            border-radius: 10px; /* 테두리 둥글게 */
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-bottom: 3px solid #ff6f61;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+        }
+        .form-group label {
+            font-weight: bold;
+            color: #ff6f61;
+            font-size: 1.1rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #ff6f61;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #ff6f61;
+            box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
         }
         .btn {
             border-radius: 25px;
-            padding: 10px 15px;
-            font-size: 14px;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
         }
         .btn-primary {
-            background-color: #007bff;
+            background-color: #ff6f61;
             border: none;
         }
         .btn-primary:hover {
-            background-color: #0069d9;
+            background-color: #e55a50;
+            transform: translateY(-2px);
         }
         .btn-secondary {
             background-color: #6c757d;
@@ -48,6 +67,16 @@
         }
         .btn-secondary:hover {
             background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .footer p {
+            margin: 0; /* 푸터의 여백 제거 */
         }
     </style>
 </head>
@@ -62,6 +91,9 @@
         <button type="submit" class="btn btn-primary">수정하기</button>
         <a th:href="@{/notifications/{caretakerId}(caretakerId=${caretakerId})}" class="btn btn-secondary">취소</a>
     </form>
+    <div class="footer">
+        <p>© pill-buddy 알림 수정</p>
+    </div>
 </div>
 </body>
 </html>

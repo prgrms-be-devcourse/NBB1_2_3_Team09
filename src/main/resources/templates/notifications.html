@@ -7,33 +7,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(to right, #fffefd, #fafafa);
+            background: linear-gradient(to right, #f0f4f8, #ffffff);
             color: #333;
-            font-family: 'Noto Sans KR', sans-serif; /* 변경된 글씨체 */
+            font-family: 'Noto Sans KR', sans-serif;
         }
         .container {
             background: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
             padding: 30px;
             margin-top: 50px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
             margin-bottom: 30px;
-            font-family: 'Noto Sans KR', sans-serif; /* 변경된 글씨체 */
+            font-family: 'Noto Sans KR', sans-serif;
             color: #ff6f61;
-            font-size: 2.5rem; /* 글씨 크기 증가 */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* 텍스트 그림자 */
-            padding: 10px; /* 패딩 추가 */
-            border-bottom: 2px solid #ff6f61; /* 하단 테두리 추가 */
-            display: inline-block; /* 중앙 정렬을 위한 인라인 블록 */
-            background-color: rgba(255, 255, 255, 0.8); /* 배경색 추가 */
-            border-radius: 10px; /* 테두리 둥글게 */
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-bottom: 2px solid #ff6f61;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
         }
         .table {
             border-radius: 10px;
             overflow: hidden;
+            margin-top: 20px;
         }
         .table thead {
             background-color: #ff6f61;
@@ -42,10 +42,21 @@
         .table th, .table td {
             vertical-align: middle;
         }
+        .table td {
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+        .table tr:hover td {
+            background-color: #f8d7da; /* 마우스 오버 시 배경색 변경 */
+        }
         .btn {
             border-radius: 25px;
             padding: 10px 15px;
             font-size: 14px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05); /* 버튼 호버 시 크기 증가 */
         }
         .btn-warning {
             background-color: #ffc107;
@@ -67,6 +78,12 @@
         }
         .btn-primary:hover {
             background-color: #0069d9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
         }
     </style>
 </head>
@@ -104,6 +121,9 @@
     <div class="text-center mt-4">
         <a th:href="@{/notifications/create/{caretakerId}(caretakerId=${notifications[0].caretakerId})}" class="btn btn-primary" th:if="${!#lists.isEmpty(notifications)}"><i class="fas fa-plus"></i> 알림 추가</a>
         <a th:href="@{/notifications/create/{caretakerId}(caretakerId=${caretakerId})}" class="btn btn-primary" th:if="${#lists.isEmpty(notifications)}"><i class="fas fa-plus"></i> 알림 추가</a>
+    </div>
+    <div class="footer">
+        <p>&copy; pill-buddy 알림 시스템</p>
     </div>
 </div>
 </body>
