@@ -56,6 +56,9 @@ dependencies {
     implementation("org.apache.httpcomponents.core5:httpcore5:5.2.1")
     implementation("org.modelmapper:modelmapper:3.2.1")
 
+    // thymeleaf
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")

@@ -1,5 +1,7 @@
 package medinine.pill_buddy.domain.user.oauth.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import lombok.RequiredArgsConstructor
 import medinine.pill_buddy.domain.user.dto.UserType
 import medinine.pill_buddy.domain.user.oauth.service.SocialLoginService
@@ -17,10 +19,12 @@ import java.net.URI
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/users/oauth")
+@Tag(name = "소셜 로그인 기능", description = "사용자는 카카오 혹은 네이버 소셜 계정을 통해 로그인 및 회원가입을 할 수 있다.")
 class OAuthController(
     private val socialLoginService: SocialLoginService
 ) {
 
+    @Operation(description = "사용자는 카카오 소셜 로그인을 할 수 있다.")
     @GetMapping("/connection/kakao")
     fun getConnectionByKakao(@RequestParam userType: UserType): ResponseEntity<String> {
         val location: String = socialLoginService.getConnectionUrl(userType, "kakao")
@@ -32,6 +36,7 @@ class OAuthController(
 
     }
 
+    @Operation(description = "사용자는 네이버 소셜 로그인을 할 수 있다.")
     @GetMapping("/connection/naver")
     fun getConnectionByNaver(@RequestParam userType: UserType): ResponseEntity<String> {
         val location: String = socialLoginService.getConnectionUrl(userType, "naver")
