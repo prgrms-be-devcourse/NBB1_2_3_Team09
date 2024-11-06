@@ -7,7 +7,7 @@ data class UserDto(
     val username: String,
     val loginId: String,
     val email: String,
-    val phoneNumber: String,
+    val phoneNumber: String?,
     val imageUrl: String
 ) {
     constructor(user: User) : this(

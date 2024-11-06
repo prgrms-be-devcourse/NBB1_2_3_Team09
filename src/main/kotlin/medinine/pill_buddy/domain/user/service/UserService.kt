@@ -11,6 +11,7 @@ import medinine.pill_buddy.domain.user.dto.UserUpdateDto
 import medinine.pill_buddy.domain.user.entity.User
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,6 +25,7 @@ class UserService(
 ) {
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = ["getUser"], key = "'userId:' + #userId + ':userType:' + #userType", cacheManager = "redisCacheManager")
     fun findUser(userId: Long, userType: UserType): UserDto {
         return UserDto(findUserByIdAndUserType(userId, userType))
     }
@@ -37,7 +39,7 @@ class UserService(
             updateUsername(userUpdateDto.username ?: user.username)
             updateLoginId(userUpdateDto.loginId ?: user.loginId)
             updateEmail(userUpdateDto.email ?: user.email)
-            updatePhoneNumber(userUpdateDto.phoneNumber ?: user.phoneNumber)
+            (userUpdateDto.phoneNumber ?: user.phoneNumber)?.let { updatePhoneNumber(it) }
         }
         return UserDto(user)
     }

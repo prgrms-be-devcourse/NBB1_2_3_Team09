@@ -1,5 +1,6 @@
 package medinine.pill_buddy.domain.userMedication.service
 
+import medinine.pill_buddy.domain.record.dto.RecordDTO
 import org.springframework.transaction.annotation.Transactional
 import medinine.pill_buddy.domain.user.caretaker.repository.CaretakerRepository
 import medinine.pill_buddy.domain.userMedication.dto.UserMedicationDTO
@@ -7,7 +8,9 @@ import medinine.pill_buddy.domain.userMedication.repository.UserMedicationReposi
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
 import medinine.pill_buddy.log
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class UserMedicationServiceImpl(
@@ -29,6 +32,7 @@ class UserMedicationServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = ["getRetrieve"], key = "'caretakerId:' + #caretakerId", cacheManager = "redisCacheManager")
     override fun retrieve(caretakerId: Long): List<UserMedicationDTO> {
         val medications = userMedicationRepository.findByCaretakerId(caretakerId)
         log.info("Retrieved medications: {}", medications)
@@ -55,5 +59,22 @@ class UserMedicationServiceImpl(
         userMedicationDTO.dosage?.let { userMedication.updateDosage(it) }
 
         return UserMedicationDTO.entityToDTO(userMedication)
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = ["getRecordsByDate"], key = "'caretakerId:' + #caretakerId + ':date:' + #date", cacheManager = "redisCacheManager")
+    override fun getUserMedicationRecordsByDate(caretakerId: Long, date: LocalDateTime): List<RecordDTO> {
+        val userMedications = userMedicationRepository.findByCaretakerId(caretakerId)
+        val recordDTOList = mutableListOf<RecordDTO>()
+
+        for (medication in userMedications) {
+            val records = medication.records
+                .filter { it.date.toLocalDate() == date.toLocalDate() }
+
+            for (record in records) {
+                recordDTOList.add(RecordDTO(record))
+            }
+        }
+        return recordDTOList
     }
 }

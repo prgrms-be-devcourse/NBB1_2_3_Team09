@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CaregiverRepository : JpaRepository<Caregiver, Long> {
 
+    fun findByEmail(email: String): Caregiver?
     fun findByLoginId(loginId: String): Caregiver?
     fun existsByLoginId(loginId: String): Boolean
     fun existsByEmail(email: String): Boolean
