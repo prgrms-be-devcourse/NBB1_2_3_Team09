@@ -28,7 +28,7 @@ class NotificationWebController(
     fun createNotificationForm(@PathVariable("caretakerId") caretakerId: Long, model: Model): String {
         val userMedications = userMedicationServiceImpl.retrieve(caretakerId)
         model.addAttribute("caretakerId", caretakerId)
-        model.addAttribute("userMedications", userMedications) // 사용자 약물 목록 추가
+        model.addAttribute("userMedications", userMedications)
         return "create_notification" // createNotification.html 뷰를 반환
     }
 
@@ -41,9 +41,12 @@ class NotificationWebController(
     }
 
     // 알림 목록 페이지 -> 알림 수정 버튼
-    @GetMapping("/update/{notificationId}")
-    fun updateNotificationForm(@PathVariable("notificationId") notificationId: Long, model: Model): String {
+    @GetMapping("/update/{notificationId}/{caretakerId}")
+    fun updateNotificationForm(@PathVariable("notificationId") notificationId: Long,
+                               @PathVariable("caretakerId") caretakerId: Long,
+                               model: Model): String {
         model.addAttribute("notificationId", notificationId)
+        model.addAttribute("caretakerId", caretakerId)
         return "update_notification" // update_notification.html 뷰를 반환
     }
 
@@ -58,12 +61,11 @@ class NotificationWebController(
         return "redirect:/notifications/${caretakerId}" // 수정 후 해당 사용자의 알림 페이지로 리다이렉트
     }
 
-//    // 알림 삭제
-//    @PostMapping("/delete/{notificationId}")
-//    fun deleteNotification(@PathVariable("notificationId") notificationId: Long): String {
-//        notificationService.deleteNotification(notificationId)
-//        return "redirect:/notifications" // 삭제 후 알림 목록 페이지로 리다이렉트
-//    }
-
+    // 알림 삭제
+    @PostMapping("/delete/{notificationId}/{caretakerId}")
+    fun deleteNotification(@PathVariable notificationId: Long, @PathVariable("caretakerId") caretakerId: Long): String {
+        notificationService.deleteNotification(notificationId)
+        return "redirect:/notifications/${caretakerId}" // 삭제 후 알림 목록 페이지로 리다이렉트
+    }
 }
 
