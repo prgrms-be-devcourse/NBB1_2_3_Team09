@@ -49,6 +49,7 @@ class MedicationApiService(
     fun synchronizeDB() {
         val keywordList = medicationApiRepository.findAllByDistinctItemName()
         for (keyword in keywordList) {
+            log.info("null이니? : $keyword" )
             val newMedicationList = createDto(MedicationForm(itemName = keyword)).map { modelMapper.map(it,Medication::class.java) }
             val oldMedicationList = medicationApiRepository.findAllByItemName(keyword)
             sizeSynchronize(newMedicationList, oldMedicationList,keyword)
@@ -73,6 +74,9 @@ class MedicationApiService(
             }
             oldMedication.dirtyChecking(newMedication,keyword)
             newMedications.remove(newMedication)
+        }
+        for (newMedication in newMedications) {
+            newMedication.keyword=keyword
         }
         medicationApiRepository.saveAll(newMedications)
         medicationApiRepository.deleteAll(oldDeleteMedications)

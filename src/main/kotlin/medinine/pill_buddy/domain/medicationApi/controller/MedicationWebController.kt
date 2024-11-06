@@ -76,7 +76,7 @@ class MedicationWebController(private val medicationApiService: MedicationApiSer
     @GetMapping("/synchronized")
     fun synchronize(): ModelAndView {
         medicationApiService.synchronizeDB()
-        return ModelAndView("redirect:/api/search")
+        return ModelAndView("redirect:/search")
     }
 
     @GetMapping("/{medicationId}")
