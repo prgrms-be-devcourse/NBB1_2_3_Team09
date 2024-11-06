@@ -48,6 +48,7 @@ class MedicationApiService(
     @Transactional
     fun synchronizeDB() {
         val keywordList = medicationApiRepository.findAllByDistinctItemName()
+
         for (keyword in keywordList) {
             log.info("null이니? : $keyword" )
             val newMedicationList = createDto(MedicationForm(itemName = keyword)).map { modelMapper.map(it,Medication::class.java) }
