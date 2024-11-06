@@ -60,7 +60,7 @@
             <input type="datetime-local" id="notificationTime" name="notificationTime" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">수정하기</button>
-        <a th:href="@{/notifications}" class="btn btn-secondary">취소</a>
+        <a th:href="@{/notifications/{caretakerId}(caretakerId=${caretakerId})}" class="btn btn-secondary">취소</a>
     </form>
 </div>
 </body>
