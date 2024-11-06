@@ -1,5 +1,6 @@
 package medinine.pill_buddy.domain.medicationApi.controller
 
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
@@ -13,11 +14,9 @@ import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
 import medinine.pill_buddy.log
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.ModelAndView
 
 @RestController
 @RequestMapping("/api/search")
@@ -57,55 +56,42 @@ class MedicationApiController(private val medicationApiService: MedicationApiSer
         )]
     )
     @GetMapping
-    fun showSearchForm(model: Model): ModelAndView {
-        // 빈 MedicationForm 객체를 모델에 추가해 폼을 렌더링
-        model.addAttribute("medicationForm", MedicationForm())
-        return ModelAndView("medication/search")
-    }
-
-    @PostMapping
-    fun searchMedications(
+    fun findMedicationByApi(
         @ModelAttribute @Validated medicationForm: MedicationForm,
         bindingResult: BindingResult,
-        @RequestParam(defaultValue = "1") pageNo: Int,
-        @RequestParam(defaultValue = "10") numOfRows: Int,
-        model: Model
-    ): ModelAndView {
+        @Parameter(description = "페이지 번호") @RequestParam(defaultValue = "1") pageNo: Int,
+        @Parameter(description = "한 페이지의 데이터 개수") @RequestParam(defaultValue = "10") numOfRows: Int
+    ): JsonForm {
         if (bindingResult.hasErrors()) {
             throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE)
         }
-
-        // 검색 결과 로깅
         log.info("${medicationForm.itemName}, ${medicationForm.itemSeq}, ${medicationForm.entpName}")
+        //DB에 레코드가 있다면 DB에서 레코드 반환
+        var medicationDtoList = medicationApiService.findPageByName(medicationForm.itemName?: throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE), pageNo - 1, numOfRows)
 
-        // 검색 결과 조회 (DB 또는 API에서)
-        var medicationDtoList = medicationApiService.findPageByName(medicationForm.itemName?:throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE), pageNo - 1, numOfRows)
-
-        // 데이터가 없으면 외부 API를 통해 새로 저장
-        if (medicationDtoList.isEmpty) {
-            medicationApiService.saveMedication(medicationApiService.createDto(medicationForm), medicationForm.itemName?:throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE))
-            medicationDtoList = medicationApiService.findPageByName(medicationForm.itemName?:throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE), pageNo - 1, numOfRows)
+        if (!medicationDtoList.isEmpty) {
+            log.info("약정보 저장되어있음")
+            return JsonForm(
+                medicationDtoList.totalElements.toInt(),
+                pageNo,
+                medicationDtoList.totalPages,
+                medicationDtoList.content
+            )
         }
+        log.info("약정보 없음")
 
-        // 검색 결과를 모델에 추가
-        val jsonForm = JsonForm(
-            totalCount = medicationDtoList.totalElements.toInt(),
-            nowPageNum = pageNo,
-            maxPageNum = medicationDtoList.totalPages,
-            data = medicationDtoList.content
+        //DB에 레코드가 없다면 외부API 통신을 통해 DB에 레코드를 저장한 후 레코드 반환
+        medicationApiService.saveMedication(medicationApiService.createDto(medicationForm),medicationForm.itemName?: throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE))
+        medicationDtoList = medicationApiService.findPageByName(medicationForm.itemName?: throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE), pageNo - 1, numOfRows)
+
+        return JsonForm(
+            medicationDtoList.totalElements.toInt(),
+            pageNo,
+            medicationDtoList.totalPages,
+            medicationDtoList.content
         )
-        model.addAttribute("jsonForm", jsonForm)
-        model.addAttribute("medicationForm",medicationForm)
-        return ModelAndView("medication/medicationList")
-    }
-    @GetMapping("/synchronized")
-    fun synchronize(): String {
-        medicationApiService.synchronizeDB()
-        return "redirect:/api/search"
     }
 
     @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
     fun synchronizeDB() = medicationApiService.synchronizeDB()
-
-
 }

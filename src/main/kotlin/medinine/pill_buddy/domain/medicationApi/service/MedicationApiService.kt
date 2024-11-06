@@ -14,8 +14,6 @@ import medinine.pill_buddy.global.exception.PillBuddyCustomException
 import medinine.pill_buddy.log
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.Cacheable
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -53,13 +51,14 @@ class MedicationApiService(
         for (keyword in keywordList) {
             val newMedicationList = createDto(MedicationForm(itemName = keyword)).map { modelMapper.map(it,Medication::class.java) }
             val oldMedicationList = medicationApiRepository.findAllByItemName(keyword)
-            sizeSynchronize(newMedicationList, oldMedicationList)
+            sizeSynchronize(newMedicationList, oldMedicationList,keyword)
         }
     }
 
     fun sizeSynchronize(
         newMedicationList: List<Medication>,
-        oldMedicationList: List<Medication>
+        oldMedicationList: List<Medication>,
+        keyword: String
     ) {
         val newMedications = newMedicationList.toMutableList()
         val oldMedications = oldMedicationList.toMutableList()
@@ -72,7 +71,7 @@ class MedicationApiService(
                 oldDeleteMedications.add(oldMedication)
                 continue
             }
-            oldMedication.dirtyChecking(newMedication)
+            oldMedication.dirtyChecking(newMedication,keyword)
             newMedications.remove(newMedication)
         }
         medicationApiRepository.saveAll(newMedications)
@@ -103,7 +102,7 @@ class MedicationApiService(
         }
     }
 
-    private fun Medication.dirtyChecking(it: Medication) {
+    private fun Medication.dirtyChecking(it: Medication,keyword: String) {
         this.itemName = it.itemName
         entpName = it.entpName
         seQesitm = it.seQesitm
@@ -114,15 +113,20 @@ class MedicationApiService(
         depositMethodQesitm = it.depositMethodQesitm
         useMethodQesitm = it.useMethodQesitm
         itemImagePath = it.itemImagePath
+        this.keyword = keyword
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = ["medicationCache"], key = "'itemName:' + #itemName + ':pageNo:' + #pageNo + ':numofRows:' + #numOfRows", cacheManager = "redisCacheManager")
+//    @Cacheable(cacheNames = ["medicationCache"], key = "'itemName:' + #itemName + ':pageNo:' + #pageNo + ':numofRows:' + #numOfRows", cacheManager = "redisCacheManager")
     fun findPageByName(itemName: String, pageNo: Int, numOfRows: Int): MyPageImpl<MedicationDTO> {
         val pageRequest = PageRequest.of(pageNo, numOfRows, Sort.by(Sort.Direction.ASC, "itemSeq"))
         val allByItemNameLike = medicationApiRepository.findPageByItemNameLike(itemName, pageRequest)
         if(pageNo> allByItemNameLike.totalPages) throw PillBuddyCustomException(ErrorCode.OUT_OF_PAGE)
         return MyPageImpl(allByItemNameLike.map { modelMapper.map(it,MedicationDTO::class.java) })
+    }
+    @Transactional(readOnly = true)
+    fun findById(id:Long) : MedicationDTO{
+        return modelMapper.map(medicationApiRepository.findByItemSeq(id),MedicationDTO::class.java)
     }
 
     @Transactional

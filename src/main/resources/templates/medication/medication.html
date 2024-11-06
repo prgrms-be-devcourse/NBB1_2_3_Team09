@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>약 상세 정보</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-light">
+<div class="container my-5">
+    <h1 class="text-center mb-4" th:text="${medication.itemName}">약 이름</h1>
+
+    <div class="card p-4 mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <img th:src="${medication.itemImagePath}" alt="약 이미지" class="img-fluid rounded" onerror="this.src='/images/no_image.png'">
+            </div>
+            <div class="col-md-8">
+                <h5>제약사명</h5>
+                <p th:text="${medication.entpName}">제약사명 정보</p>
+
+                <h5>효능</h5>
+                <p th:text="${medication.efcyQesitm}">효능 정보</p>
+
+                <h5>사용 방법</h5>
+                <p th:text="${medication.useMethodQesitm}">사용 방법 정보</p>
+
+                <h5>주의사항</h5>
+                <p th:text="${medication.atpnWarnQesitm}">주의사항 경고</p>
+                <p th:text="${medication.atpnQesitm}">주의사항 정보</p>
+
+                <h5>상호작용</h5>
+                <p th:text="${medication.intrcQesitm}">상호작용 정보</p>
+
+                <h5>부작용</h5>
+                <p th:text="${medication.seQesitm}">부작용 정보</p>
+
+                <h5>보관 방법</h5>
+                <p th:text="${medication.depositMethodQesitm}">보관 방법 정보</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end">
+        <a th:href="@{/search(itemName=${itemName}, entpName=${entpName}, itemSeq=${itemSeq})}" class="btn btn-outline-primary">검색 결과로 돌아가기</a>
+    </div>
+</div>
+
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

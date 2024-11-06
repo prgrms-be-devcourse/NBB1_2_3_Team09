@@ -9,7 +9,7 @@
 <div class="container my-5">
     <h1 class="text-center mb-4">약 정보 검색</h1>
 
-    <form th:action="@{/api/search}" method="post" th:object="${medicationForm}" class="border p-4 bg-white shadow-sm rounded">
+    <form th:action="@{/search}" method="post" th:object="${medicationForm}" class="border p-4 bg-white shadow-sm rounded">
         <div class="mb-3">
             <label for="itemName" class="form-label">약 이름:</label>
             <input type="text" id="itemName" th:field="*{itemName}" placeholder="약 이름 입력" class="form-control"/>
@@ -24,11 +24,12 @@
         </div>
         <button type="submit" class="btn btn-primary w-100">검색</button>
     </form>
-</div>
-
-<div class="mb-4 text-end">
+    <div class="mb-4 text-end">
     <a href="/api/search/synchronized" class="btn btn-outline-primary">데이터 동기화</a>
 </div>
+
+</div>
+
 
 <script th:src="@{/js/scripts.js}"></script>
 </body>
