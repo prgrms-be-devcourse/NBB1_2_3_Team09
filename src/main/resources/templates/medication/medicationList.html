@@ -3,7 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>약 정보 검색 결과</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #e0faeb, #ffffff); /* 부드러운 초록색 배경 */
+            color: #333;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #2e8f74; /* 부드러운 초록색 */
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-bottom: 2px solid #2e8f74; /* 부드러운 초록색 */
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .table-dark {
+            background-color: #2e8f74; /* 부드러운 초록색 */
+            color: white;
+        }
+        .btn-primary {
+            background-color: #2e8f74; /* 부드러운 초록색 */
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #2e8f74;
+        }
+        .btn-outline-primary {
+            color: #2e8f74; /* 부드러운 초록색 */
+            border-color: #2e8f74;
+        }
+        .btn-outline-primary:hover {
+            background-color: #2e8f74;
+            color: white;
+        }
+    </style>
 </head>
 <body class="bg-light">
 <div class="container my-5">
@@ -60,9 +112,8 @@
         </form>
     </div>
     <div class="mb-4 text-end">
-    <a href="/search" class="btn btn-outline-primary">검색창으로 돌아가기</a>
-</div>
-
+        <a href="/search" class="btn btn-outline-primary">검색창으로 돌아가기</a>
+    </div>
 </div>
 
 
