@@ -91,8 +91,12 @@
             <td th:text="${notification.caretakerUsername}"></td>
             <td th:text="${#temporals.format(notification.notificationTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td>
-                <a th:href="@{/notifications/update/{notificationId}(notificationId=${notification.notificationId})}" class="btn btn-warning"><i class="fas fa-edit"></i> 수정</a>
-                <a th:href="@{/notifications/delete/{notificationId}(notificationId=${notification.notificationId})}" class="btn btn-danger"><i class="fas fa-trash"></i> 삭제</a>
+                <a th:href="@{/notifications/update/{notificationId}/{caretakerId}(notificationId=${notification.notificationId}, caretakerId=${caretakerId})}" class="btn btn-warning"><i class="fas fa-edit"></i> 수정</a>
+                <form th:action="@{/notifications/delete/{notificationId}/{caretakerId}(notificationId=${notification.notificationId}, caretakerId=${caretakerId})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('정말로 이 알림을 삭제하시겠습니까?');">
+                        <i class="fas fa-trash"></i> 삭제
+                    </button>
+                </form>
             </td>
         </tr>
         </tbody>
