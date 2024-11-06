@@ -9,12 +9,16 @@ spring:
       use_sql_comments: true
       jdbc:
         batch_size: 100
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
 
   data:
     redis:
       host: localhost
       port: 6379
+  thymeleaf:
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
 
 logging:
   level:

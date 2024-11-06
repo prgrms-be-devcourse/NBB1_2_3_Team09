@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>약 정보 검색</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-light">
+<div class="container my-5">
+    <h1 class="text-center mb-4">약 정보 검색</h1>
+
+    <form th:action="@{/search}" method="post" th:object="${medicationForm}" class="border p-4 bg-white shadow-sm rounded">
+        <div class="mb-3">
+            <label for="itemName" class="form-label">약 이름:</label>
+            <input type="text" id="itemName" th:field="*{itemName}" placeholder="약 이름 입력" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label for="entpName" class="form-label">회사명:</label>
+            <input type="text" id="entpName" th:field="*{entpName}" placeholder="회사명 입력" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label for="itemSeq" class="form-label">품목기준코드:</label>
+            <input type="text" id="itemSeq" th:field="*{itemSeq}" placeholder="품목기준코드 입력" class="form-control"/>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">검색</button>
+    </form>
+    <div class="mb-4 text-end">
+    <a href="/api/search/synchronized" class="btn btn-outline-primary">데이터 동기화</a>
+</div>
+
+</div>
+
+
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

@@ -28,6 +28,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
 
     // JWT
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
@@ -50,8 +52,8 @@ dependencies {
 
     // 공공 API 및 swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
-	implementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
-	implementation("org.apache.httpcomponents.core5:httpcore5:5.2.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
+    implementation("org.apache.httpcomponents.core5:httpcore5:5.2.1")
     implementation("org.modelmapper:modelmapper:3.2.1")
 
     // thymeleaf

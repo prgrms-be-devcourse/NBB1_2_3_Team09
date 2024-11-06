@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 기능 페이지</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        // URL 파라미터에서 JWT 토큰 추출
+        function getJwtTokenFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('token');
+        }
+
+        // JWT 토큰을 로컬 스토리지에 저장
+        function storeJwtToken() {
+            const jwtToken = getJwtTokenFromUrl();
+            if (jwtToken) {
+                localStorage.setItem('jwtToken', jwtToken);
+            } else {
+                console.error('JWT 토큰이 없습니다.');
+            }
+        }
+
+        function sendUserActionRequest(url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // JSON으로 파싱
+                })
+                .then(data => {
+                    // 리다이렉트 URL로 이동
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
+                    }
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        // 페이지 로딩 시 JWT 토큰 저장
+        window.onload = function() {
+            storeJwtToken();
+        };
+    </script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">사용자 기능 페이지</h1>
+    <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center">
+        <div class="col">
+            <button onclick="sendUserActionRequest('/api/register-medicine')" class="btn btn-primary w-100">사용자 약 등록</button>
+        </div>
+        <div class="col">
+            <button onclick="sendUserActionRequest('/api/register-caregiver')" class="btn btn-primary w-100">보호자 등록</button>
+        </div>
+        <div class="col">
+            <button onclick="sendUserActionRequest('/api/update-user-info')" class="btn btn-primary w-100">사용자 정보 수정</button>
+        </div>
+        <div class="col">
+            <button onclick="sendUserActionRequest('/api/notifications')" class="btn btn-primary w-100">알림</button>
+        </div>
+        <div class="col">
+            <button onclick="sendUserActionRequest('/api/record')" class="btn btn-primary w-100">약 복용 기록</button>
+        </div>
+        <div class="col">
+            <button onclick="sendUserActionRequest('/api/search')" class="btn btn-primary w-100">약 정보 검색</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -67,7 +67,7 @@ class MedicationApiController(private val medicationApiService: MedicationApiSer
         }
         log.info("${medicationForm.itemName}, ${medicationForm.itemSeq}, ${medicationForm.entpName}")
         //DB에 레코드가 있다면 DB에서 레코드 반환
-        var medicationDtoList = medicationApiService.findPageByName(medicationForm.itemName, pageNo - 1, numOfRows)
+        var medicationDtoList = medicationApiService.findPageByName(medicationForm.itemName?: throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE), pageNo - 1, numOfRows)
 
         if (!medicationDtoList.isEmpty) {
             log.info("약정보 저장되어있음")
@@ -81,8 +81,8 @@ class MedicationApiController(private val medicationApiService: MedicationApiSer
         log.info("약정보 없음")
 
         //DB에 레코드가 없다면 외부API 통신을 통해 DB에 레코드를 저장한 후 레코드 반환
-        medicationApiService.saveMedication(medicationApiService.createDto(medicationForm),medicationForm.itemName)
-        medicationDtoList = medicationApiService.findPageByName(medicationForm.itemName, pageNo - 1, numOfRows)
+        medicationApiService.saveMedication(medicationApiService.createDto(medicationForm),medicationForm.itemName?: throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE))
+        medicationDtoList = medicationApiService.findPageByName(medicationForm.itemName?: throw PillBuddyCustomException(ErrorCode.REQUIRED_VALUE), pageNo - 1, numOfRows)
 
         return JsonForm(
             medicationDtoList.totalElements.toInt(),
