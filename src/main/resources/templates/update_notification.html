@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>알림 수정</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #f0f4f8, #f8f8f8);
+            color: #333;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 50px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.02); /* 마우스 오버 시 확대 효과 */
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ff6f61;
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-bottom: 3px solid #ff6f61;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+        }
+        .form-group label {
+            font-weight: bold;
+            color: #ff6f61;
+            font-size: 1.1rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #ff6f61;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #ff6f61;
+            box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+        }
+        .btn {
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn-primary {
+            background-color: #ff6f61;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #e55a50;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .footer p {
+            margin: 0; /* 푸터의 여백 제거 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>알림 수정</h1>
+    <form th:action="@{/notifications/update/{notificationId}(notificationId=${notificationId})}" method="post">
+        <div class="form-group">
+            <label for="notificationTime">알림 시간</label>
+            <input type="datetime-local" id="notificationTime" name="notificationTime" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">수정하기</button>
+        <a th:href="@{/notifications/{caretakerId}(caretakerId=${caretakerId})}" class="btn btn-secondary">취소</a>
+    </form>
+    <div class="footer">
+        <p>© pill-buddy 알림 수정</p>
+    </div>
+</div>
+</body>
+</html>

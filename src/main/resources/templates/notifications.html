@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>알림 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #f0f4f8, #ffffff);
+            color: #333;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #ff6f61;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-bottom: 2px solid #ff6f61;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .table thead {
+            background-color: #ff6f61;
+            color: white;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .table td {
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+        .table tr:hover td {
+            background-color: #f8d7da; /* 마우스 오버 시 배경색 변경 */
+        }
+        .btn {
+            border-radius: 25px;
+            padding: 10px 15px;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05); /* 버튼 호버 시 크기 증가 */
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .font-weight-bold {
+            font-weight: bold; /* 글씨체를 굵게 만드는 클래스 */
+            color: #555; /* 약간 연한 색상으로 변경 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>알림 목록</h1>
+    <div th:if="${#lists.isEmpty(notifications)}" class="text-center">
+        <p>알림이 없습니다.</p>
+    </div>
+    <table class="table table-striped table-hover" th:if="${!#lists.isEmpty(notifications)}">
+        <thead>
+        <tr>
+            <th><i class="fas fa-pills"></i> 약 이름</th>
+            <th><i class="fas fa-user"></i> 사용자 이름</th>
+            <th><i class="fas fa-clock"></i> 알림 시간</th>
+            <th><i class="fas fa-cogs"></i> 작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notification : ${notifications}">
+            <td class="font-weight-bold" th:text="${notification.medicationName}"></td> <!-- 약 이름을 굵게 표시 -->
+            <td th:text="${notification.caretakerUsername}"></td>
+            <td th:text="${#temporals.format(notification.notificationTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <a th:href="@{/notifications/update/{notificationId}/{caretakerId}(notificationId=${notification.notificationId}, caretakerId=${caretakerId})}" class="btn btn-warning"><i class="fas fa-edit"></i> 수정</a>
+                <form th:action="@{/notifications/delete/{notificationId}/{caretakerId}(notificationId=${notification.notificationId}, caretakerId=${caretakerId})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('정말로 이 알림을 삭제하시겠습니까?');">
+                        <i class="fas fa-trash"></i> 삭제
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="text-center mt-4">
+        <a th:href="@{/notifications/create/{caretakerId}(caretakerId=${notifications[0].caretakerId})}" class="btn btn-primary" th:if="${!#lists.isEmpty(notifications)}"><i class="fas fa-plus"></i> 알림 추가</a>
+        <a th:href="@{/notifications/create/{caretakerId}(caretakerId=${caretakerId})}" class="btn btn-primary" th:if="${#lists.isEmpty(notifications)}"><i class="fas fa-plus"></i> 알림 추가</a>
+    </div>
+    <div class="footer">
+        <p>&copy; pill-buddy 알림 시스템</p>
+    </div>
+</div>
+</body>
+</html>
