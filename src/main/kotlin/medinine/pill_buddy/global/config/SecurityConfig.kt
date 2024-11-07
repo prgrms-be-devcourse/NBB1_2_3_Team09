@@ -3,10 +3,13 @@ package medinine.pill_buddy.global.config
 import medinine.pill_buddy.global.jwt.JwtAccessDeniedHandler
 import medinine.pill_buddy.global.jwt.JwtAuthenticationEntryPoint
 import medinine.pill_buddy.global.jwt.JwtAuthenticationFilter
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,9 +23,17 @@ class SecurityConfig(
     private var jwtAccessDeniedHandler: JwtAccessDeniedHandler,
     private var entryPoint: JwtAuthenticationEntryPoint
 ) {
+
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web ->
+            web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+        }
     }
 
     @Bean
@@ -40,11 +51,27 @@ class SecurityConfig(
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            // api 테스트 시 편의를 위해 잠시 모든 요청 허용
             .authorizeHttpRequests { req ->
-                // req.requestMatchers("/api/users/join", "/api/users/login").permitAll()
-                //     .anyRequest().authenticated()
-                req.anyRequest().permitAll()
+                req
+                    .requestMatchers(
+                        // 로그인 관련
+                        HttpMethod.POST,
+                        "/api/users/join",
+                        "/api/users/login",
+                        "/api/users/reissue-token",
+                    ).permitAll()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/users/oauth/**",
+                        "/api/search",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**"
+                    ).permitAll()
+                    .requestMatchers(
+                        "/search/**",
+                        "/error"
+                    ).permitAll()
+                    .anyRequest().hasRole("USER")
             }
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
