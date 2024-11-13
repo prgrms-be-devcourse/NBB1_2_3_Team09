@@ -25,7 +25,7 @@ class UserService(
 ) {
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = ["getUser"], key = "'userId:' + #userId + ':userType:' + #userType", cacheManager = "redisCacheManager")
+//    @Cacheable(cacheNames = ["getUser"], key = "'userId:' + #userId + ':userType:' + #userType", cacheManager = "redisCacheManager")
     fun findUser(userId: Long, userType: UserType): UserDto {
         return UserDto(findUserByIdAndUserType(userId, userType))
     }
