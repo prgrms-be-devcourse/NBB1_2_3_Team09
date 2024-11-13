@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import medinine.pill_buddy.domain.medicationApi.dto.MedicationDTO
 import medinine.pill_buddy.domain.medicationApi.dto.MedicationForm
-import medinine.pill_buddy.domain.medicationApi.dto.MyPageImpl
 import medinine.pill_buddy.domain.medicationApi.entity.Medication
 import medinine.pill_buddy.domain.medicationApi.repository.MedicationApiRepository
 import medinine.pill_buddy.global.exception.ErrorCode
@@ -14,6 +13,7 @@ import medinine.pill_buddy.global.exception.PillBuddyCustomException
 import medinine.pill_buddy.log
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -50,7 +50,6 @@ class MedicationApiService(
         val keywordList = medicationApiRepository.findAllByDistinctItemName()
 
         for (keyword in keywordList) {
-            log.info("null이니? : $keyword" )
             val newMedicationList = createDto(MedicationForm(itemName = keyword)).map { modelMapper.map(it,Medication::class.java) }
             val oldMedicationList = medicationApiRepository.findAllByItemName(keyword)
             sizeSynchronize(newMedicationList, oldMedicationList,keyword)
@@ -123,11 +122,11 @@ class MedicationApiService(
 
     @Transactional(readOnly = true)
 //    @Cacheable(cacheNames = ["medicationCache"], key = "'itemName:' + #itemName + ':pageNo:' + #pageNo + ':numofRows:' + #numOfRows", cacheManager = "redisCacheManager")
-    fun findPageByName(itemName: String, pageNo: Int, numOfRows: Int): MyPageImpl<MedicationDTO> {
+    fun findPageByName(itemName: String, pageNo: Int, numOfRows: Int): Page<MedicationDTO> {
         val pageRequest = PageRequest.of(pageNo, numOfRows, Sort.by(Sort.Direction.ASC, "itemSeq"))
         val allByItemNameLike = medicationApiRepository.findPageByItemNameLike(itemName, pageRequest)
         if(pageNo> allByItemNameLike.totalPages) throw PillBuddyCustomException(ErrorCode.OUT_OF_PAGE)
-        return MyPageImpl(allByItemNameLike.map { modelMapper.map(it,MedicationDTO::class.java) })
+        return allByItemNameLike.map { modelMapper.map(it,MedicationDTO::class.java) }
     }
     @Transactional(readOnly = true)
     fun findById(id:Long) : MedicationDTO{

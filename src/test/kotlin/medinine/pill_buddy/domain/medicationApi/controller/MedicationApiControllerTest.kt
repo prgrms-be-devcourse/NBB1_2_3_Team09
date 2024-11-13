@@ -3,7 +3,6 @@ package medinine.pill_buddy.domain.medicationApi.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import medinine.pill_buddy.domain.medicationApi.dto.MedicationDTO
 import medinine.pill_buddy.domain.medicationApi.dto.MedicationForm
-import medinine.pill_buddy.domain.medicationApi.dto.MyPageImpl
 import medinine.pill_buddy.domain.medicationApi.service.MedicationApiService
 import medinine.pill_buddy.global.exception.ErrorCode
 import medinine.pill_buddy.global.exception.PillBuddyCustomException
@@ -19,9 +18,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -29,6 +28,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @WebMvcTest(controllers = [MedicationApiController::class])
 @AutoConfigureMockMvc(addFilters = false)
 @Import(ObjectMapper::class)
+@WithMockUser(username = "mock-user", roles = ["USER"])
 internal class MedicationApiControllerTest( @Autowired val mockMvc: MockMvc ){
 
     @MockBean
@@ -42,11 +42,9 @@ internal class MedicationApiControllerTest( @Autowired val mockMvc: MockMvc ){
     fun setUp() {
         val medicationDTO = MedicationDTO("아스피린")
         val medicationList = listOf(medicationDTO)
-        Mockito.`when`(medicationApiService.findPageByName("아스피린", 0, 10)).thenReturn(MyPageImpl(medicationList,PageRequest.of(0,10),medicationList.size.toLong()))
-        Mockito.`when`(medicationApiService.findPageByName("아스피린", 1, 10))
-            .thenThrow(PillBuddyCustomException(ErrorCode.OUT_OF_PAGE))
-        Mockito.`when`(medicationApiService.findPageByName("에러발생", 0, 10)).thenReturn(MyPageImpl(listOf(),PageRequest.of(0,0
-        ),0))
+        Mockito.`when`(medicationApiService.findPageByName("아스피린", 0, 10)).thenReturn(PageImpl(medicationList))
+        Mockito.`when`(medicationApiService.findPageByName("아스피린", 1, 10)).thenThrow(PillBuddyCustomException(ErrorCode.OUT_OF_PAGE))
+        Mockito.`when`(medicationApiService.findPageByName("에러발생", 0, 10)).thenReturn(PageImpl(listOf()))
         Mockito.`when`(medicationApiService.createDto(MedicationForm("에러발생"))).thenThrow(PillBuddyCustomException(ErrorCode.ERROR_CONNECTION))
     }
 
