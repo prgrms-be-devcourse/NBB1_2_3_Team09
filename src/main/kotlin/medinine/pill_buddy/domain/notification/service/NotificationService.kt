@@ -185,7 +185,7 @@ class NotificationService(
     }
 
     // 주어진 사용자 ID로부터 알림을 조회합니다.
-    @Cacheable(cacheNames = ["getNotification"], key = "'caretakerId:' + #caretakerId", cacheManager = "redisCacheManager")
+//    @Cacheable(cacheNames = ["getNotification"], key = "'caretakerId:' + #caretakerId", cacheManager = "redisCacheManager")
     fun findNotification(caretakerId: Long): List<NotificationDTO> {
         val caretaker = caretakerRepository.findById(caretakerId)
             .orElseThrow { PillBuddyCustomException(ErrorCode.CARETAKER_NOT_FOUND) }
